@@ -7,7 +7,7 @@ calcStat.Strategy <- function(this, s, start, end){
   start <- get_backtest_start_index(this, start)
   end <- get_backtest_end_index(this, end)
   period <- paste('per', start, end, sep = '_')
-  if(!is.null(this$backtest$stats)){
+  if(is.null(this$backtest$stats)){
     this$backtest$stats <- list()
   }
   if(is.null(this$backtest$stats[[period]])){

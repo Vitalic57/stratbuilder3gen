@@ -9,7 +9,7 @@
 #' @param ... args passed to subclasses
 #'
 #' @export
-#' @rdname SignalClass
+#' @rdname Signal
 Signal <- function(expr,
                    name,
                    lookback = 0,
@@ -38,7 +38,7 @@ Signal <- function(expr,
 #' @param ... args passed to Signal
 #'
 #' @export
-#' @rdname IndicatorClass
+#' @rdname Signal
 Indicator <- function(lookforward=Inf,
                       history=TRUE,
                       vars=NULL,
@@ -71,7 +71,7 @@ Indicator <- function(lookforward=Inf,
 #' @param ... args passed to Signal
 #'
 #' @export
-#' @rdname RuleClass
+#' @rdname Signal
 Rule <- function(type='enter',
                  block,
                  pathwise = FALSE,
@@ -82,6 +82,9 @@ Rule <- function(type='enter',
                  ...){
   if(!type %in% c('enter','exit')){
     stop('wrong type! It must be enter or exit')
+  }
+  if(type =='enter' && is.null(position) && is.null(position_const) ){
+    position_const = quote(floor(getMoney(this) / data$mat$close[i,] / ncol(data$mat$close)))
   }
   dots <- rlang::enexprs(...)
   dots[['name']] <- gsub('\\.','_', dots[['name']])
@@ -129,7 +132,7 @@ Rule <- function(type='enter',
 #' @param ... args passed to Signal
 #'
 #' @export
-#' @rdname RuleConstraintClass
+#' @rdname Signal
 RuleConstraint <- function(
                  rules=NULL,
                  rule_type=NULL,

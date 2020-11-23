@@ -12,8 +12,17 @@
 addIndicators.Strategy <- function(this,
                                    ...){
   dots <- rlang::enexprs(...)
-  if(! 'name' %in% names(dots)){
-    dots[['name']] <- paste0('indicator', length(this$indicators) + 1)
+  nms <- sapply(this$indicators, '[[', name)
+  i <- 0
+  while(TRUE){
+    if(! 'name' %in% names(dots)){
+      tmp <- paste0('rule', length(this$indicators) + 1 + i)
+      if(!tmp %in% nms){
+        dots[['name']] <- tmp
+        break
+      }
+    }
+    i <- i + 1
   }
   this$indicators[[dots[['name']]]] <- do.call('Indicator', args = dots)
   return(invisible(this))
@@ -32,8 +41,17 @@ addRule.Strategy <- function(this,
                              ...
 ){
   dots <- rlang::enexprs(...)
-  if(! 'name' %in% names(dots)){
-    dots[['name']] <- paste0('rule', length(this$rules) + 1)
+  nms <- sapply(this$rules, '[[', name)
+  i <- 0
+  while(TRUE){
+    if(! 'name' %in% names(dots)){
+      tmp <- paste0('rule', length(this$rules) + 1 + i)
+      if(!tmp %in% nms){
+        dots[['name']] <- tmp
+        break
+      }
+    }
+    i <- i + 1
   }
   this$rules[[dots[['name']]]] <- do.call('Rule', args = dots)
   return(invisible(this))
@@ -52,8 +70,17 @@ addRuleConstraint.Strategy <- function(this,
                                        ...
 ){
   dots <- rlang::enexprs(...)
-  if(! 'name' %in% names(dots)){
-    dots[['name']] <- paste0('rule_contraint', length(this$rule_constraints) + 1)
+  nms <- sapply(this$rule_contraints, '[[', name)
+  i <- 0
+  while(TRUE){
+    if(! 'name' %in% names(dots)){
+      tmp <- paste0('rule', length(this$rule_contraints) + 1 + i)
+      if(!tmp %in% nms){
+        dots[['name']] <- tmp
+        break
+      }
+    }
+    i <- i + 1
   }
   this$rule_contraints[[dots[['name']]]] <- do.call('RuleConstraint', args = dots)
   return(invisible(this))

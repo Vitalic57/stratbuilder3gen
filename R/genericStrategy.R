@@ -232,7 +232,6 @@ removeIndicator <- function(this, name){
 
 
 #' @export
-#' @rdname addVariables
 addVariables <- function(this, ...){
   UseMethod("addVariables", this)
 }

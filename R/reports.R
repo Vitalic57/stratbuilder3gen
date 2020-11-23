@@ -2,7 +2,8 @@
 #' @method calcStat Strategy
 #' @rdname calcStat
 calcStat.Strategy <- function(this, s, start, end){
-  precalcStat(this, s, start, end)
+  args <- rlang::enexprs(s=s, start=start, end=end)
+  eval(rlang::call2('precalcStat', this=quote(this), !!!args))
   start <- get_backtest_start_index(this, start)
   end <- get_backtest_end_index(this, end)
   period <- paste('per', start, end, sep = '_')

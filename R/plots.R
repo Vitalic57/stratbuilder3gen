@@ -93,19 +93,19 @@ plotPnL.Strategy <- function(this,
            if(return_type == 'plot'){
              if(graph_type == 'ggplot2'){
                newdf <- reshape2::melt(df, 'date')
-               p <- ggplot(newdf,aes(x=date, y=value, color = variable) ) +
-                 geom_line() + theme_bw() + ggtitle("PnL money by date")
+               p <- ggplot2::ggplot(newdf, ggplot2::aes(x=date, y=value, color = variable) ) +
+                 ggplot2::geom_line() + ggplot2::theme_bw() + ggplot2::ggtitle("PnL money by date")
                if(each_year){
-                 p <- p + geom_vline(xintercept=last_dates, linetype=4, colour="red")
+                 p <- p + ggplot2::geom_vline(xintercept=last_dates, linetype=4, colour="red")
                }
                if(cutoff && 'created' %in% names(this$thisEnv)){
-                 p <- p + geom_vline(xintercept=as.numeric(this$thisEnv$created), linetype=4, colour="green")
+                 p <- p + ggplot2::geom_vline(xintercept=as.numeric(this$thisEnv$created), linetype=4, colour="green")
                }
                if(leg != 'sep'){
-                 p + scale_color_manual(
+                 p + ggplot2::scale_color_manual(
                    values = c(
                      PnL = 'darkblue'
-                   )) + theme(legend.position="none")
+                   )) + ggplot2::theme(legend.position="none")
                }else{
                  p
                }
@@ -158,13 +158,13 @@ plotPnL.Strategy <- function(this,
            if(return_type == 'plot'){
              if(graph_type == 'ggplot2'){
                newdf <- reshape2::melt(df,'index')
-               p <- ggplot(newdf, aes(x= index, y = value, color = variable) ) +
-                 geom_line() + theme_bw() + ggtitle("PnL money by trade")
+               p <- ggplot2::ggplot(newdf, ggplot2::aes(x= index, y = value, color = variable) ) +
+                 ggplot2::geom_line() + ggplot2::theme_bw() + ggplot2::ggtitle("PnL money by trade")
                if(leg != 'sep'){
-                 p + scale_color_manual(
+                 p + ggplot2::scale_color_manual(
                    values = c(
                      PnL = 'darkblue'
-                   )) + theme(legend.position="none")
+                   )) + ggplot2::theme(legend.position="none")
                }else{
                  p
                }
@@ -211,13 +211,13 @@ plotDrawdowns.Strategy <- function(this,
   if(return_type == 'plot'){
     if(graph_type == 'ggplot2'){
       newdf <- reshape2::melt(df, 'date')
-      ggplot(newdf,aes(x=date, y=value, color = variable) ) +
-        geom_line() + theme_bw() + theme(legend.position="none") +
-        scale_color_manual(
+      ggplot2::ggplot(newdf,aes(x=date, y=value, color = variable) ) +
+        ggplot2::geom_line() + ggplot2::theme_bw() + ggplot2::theme(legend.position="none") +
+        ggplot2::scale_color_manual(
           values = c(
             PnL = 'darkblue'
           ))+
-        ggtitle("Drawdowns by date")
+        ggplot2::ggtitle("Drawdowns by date")
     }else{
       plot(xts(df[,'PnL'], df[,'date']), format.labels = '%Y-%m-%d', main = 'PnL', ylab = 'money')
     }
@@ -258,18 +258,18 @@ plotReturns.Strategy <- function(this, type = 'MAE'){
 
   df <- report[,c(rets,var)] %>%
     set_colnames(c('rets','var'))
-  p <- ggplot(df, aes(abs(rets),var, group = rets < 0 )) +
-    geom_point(aes(col = rets < 0, shape = rets  < 0) , size = 3) +
+  p <- ggplot2::ggplot(df, aes(abs(rets),var, group = rets < 0 )) +
+    ggplot2::geom_point(aes(col = rets < 0, shape = rets  < 0) , size = 3) +
     #geom_point(aes(colour = rets > 0)) +
     #scale_shape(solid = FALSE) +
-    scale_shape_manual(values=c(24,25)) +
-    scale_color_manual(values=c('green','red')) +
-    geom_abline(intercept = 1, linetype = 'dotted') +
-    theme_bw() +
-    theme(legend.position="none") +
-    labs(y = paste(strsplit(var,'\\.')[[1]][1]),
+    ggplot2::scale_shape_manual(values=c(24,25)) +
+    ggplot2::scale_color_manual(values=c('green','red')) +
+    ggplot2::geom_abline(intercept = 1, linetype = 'dotted') +
+    ggplot2::theme_bw() +
+    ggplot2::theme(legend.position="none") +
+    ggplot2::labs(y = paste(strsplit(var,'\\.')[[1]][1]),
          x = paste0(strsplit(rets,'\\.')[[1]][1],'s')) +
-    ggtitle(paste(strsplit(var,'\\.')[[1]][1] ,'vs', paste0(strsplit(rets,'\\.')[[1]][1],'s') ) )
+    ggplot2::ggtitle(paste(strsplit(var,'\\.')[[1]][1] ,'vs', paste0(strsplit(rets,'\\.')[[1]][1],'s') ) )
   return(p)
 
 }
@@ -443,13 +443,13 @@ plotCapital.Strategy <- function(this,
   }
   if(return_type == 'plot'){
     newdf <- reshape2::melt(df, 'date')
-    p <- ggplot(newdf,aes_string(x="date", y="value", color = "variable") ) +
-      geom_line() + theme_bw() + ggtitle("Money in position") #+ theme(legend.position = "none")
+    p <- ggplot2::ggplot(newdf,aes_string(x="date", y="value", color = "variable") ) +
+      ggplot2::geom_line() + ggplot2::theme_bw() + ggplot2::ggtitle("Money in position") #+ theme(legend.position = "none")
     if(leg != 'sep'){
-      p + scale_color_manual(
+      p + ggplot2::scale_color_manual(
         values = c(
           PnL = 'darkblue'
-        )) + theme(legend.position="none")
+        )) + ggplot2::theme(legend.position="none")
     }
     if(interactive_plot){
       return(plotly::ggplotly(p))

@@ -56,7 +56,12 @@ format.Stat <- function(stat){
       next
     }
     if(!is.null(stat[[key]])){
-      text <- paste0(text, '    ',  key, ': ', capture.output(stat[[key]]), '\n')
+      if(is.function(stat[[key]])){
+        tmp <- paste0(capture.output(stat[[key]]), collapse = '\n')
+      }else{
+        tmp <- stat[[key]]
+      }
+      text <- paste0(text, '    ',  key, ': ', tmp, '\n')
     }
   }
   return(text)

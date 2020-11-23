@@ -56,7 +56,7 @@ format.Stat <- function(stat){
       next
     }
     if(!is.null(stat[[key]])){
-      text <- paste0(text, '    ',  key, ': ', stat[[key]], '\n')
+      text <- paste0(text, '    ',  key, ': ', capture.output(stat[[key]]), '\n')
     }
   }
   return(text)
@@ -67,3 +67,4 @@ format.Stat <- function(stat){
 print.Stat <- function(stat){
   cat(format(stat))
 }
+#

@@ -5,7 +5,6 @@
 \alias{getCommission.Strategy}
 \alias{setCommission}
 \alias{getCommission}
-\alias{calcStat}
 \title{Set commission to model}
 \usage{
 \method{setCommission}{Strategy}(this, q)
@@ -15,20 +14,14 @@
 setCommission(this, q)
 
 getCommission(this)
-
-calcStat(this, s, start, end)
 }
 \arguments{
 \item{this}{Strategy}
 
 \item{q}{quote/expression, it should depend from pos_change argument, but it can include any variable from model}
-
-\item{s}{Stat}
-
-\item{start}{numeric, start of the period}
-
-\item{end}{numeric, end of the period}
 }
 \description{
-Statistic and all dependent statistics will be calculated
+Set commission to model
+
+Get commission expression of model
 }

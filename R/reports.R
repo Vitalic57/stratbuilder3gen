@@ -1,3 +1,57 @@
+#' @export
+#' @method calcStat Strategy
+#' @rdname calcStat
+calcStat.Strategy <- function(this, s, start, end){
+  precalcStat(this, s, start, end)
+  start <- get_backtest_start_index(this, start)
+  end <- get_backtest_end_index(this, end)
+  period <- paste('per', start, end, sep = '_')
+  if(!is.null(this$backtest$stats)){
+    this$backtest$stats <- list()
+  }
+  if(is.null(this$backtest$stats[[period]])){
+    this$backtest$stats[[period]] <- list()
+  }
+  calcStat_(this, s, start, end)
+}
+
+
+
+
+#' @method calcStat_ Strategy
+#' @rdname calcStat_
+calcStat_.Strategy <- function(this, s, start, end){
+  period <- paste('per', start, end, sep = '_')
+  if(!is.null(s[['depends']])){
+    for(x in s[['depends']]){
+      if(is.null(this$backtest$stats[[period]][[x]])){
+        if(is.null(this$report_stats[[x]])){
+          s1 <- acceptable_stats[[x]]
+        }else{
+          s1 <- this$report_stats[[x]]
+        }
+        calcStat_(this, s1, start, end)
+      }
+    }
+  }
+  data <- this$data
+  value <- with(this$backtest$results, {
+    with(this$backtest$stats[[period]],{
+      environment(s$func) <- environment()
+      s$func(this, start, end)
+    })
+  })
+  if(s$general){
+    this$backtest$results[[s$name]] <- value
+  }else{
+    this$backtest$stats[[period]][[s$name]] <- value
+  }
+  return(value)
+}
+
+
+
+
 get_switch_stats <- function(in_report=NULL){
   x <- quote(switch(x, a=))
   l <- list()

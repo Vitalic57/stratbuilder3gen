@@ -339,8 +339,35 @@ getSavedModels <- function(this){
 #' @param s Stat
 #' @param start numeric, start of the period
 #' @param end numeric, end of the period
-#' @rdname commission
 #' @export
 calcStat <- function(this, s, start, end){
   UseMethod("calcStat", this)
+}
+
+
+#' Calculate statistic
+#'
+#' Statistic and all dependent statistics will be calculated
+#'
+#' @param this Strategy
+#' @param s Stat
+#' @param start numeric, start of the period
+#' @param end numeric, end of the period
+calcStat_ <- function(this, s, start, end){
+  UseMethod("calcStat_", this)
+}
+
+
+#' Calculate statistic
+#'
+#' Statistic and all dependent statistics will be calculated where possible
+#'
+#' @param this Strategy
+#' @param s Stat
+#' @param start numeric, start of the period
+#' @param end numeric, end of the period
+#' @rdname precalcStat
+#' @export
+precalcStat <- function(this, s, start, end){
+  UseMethod('precalcStat', this)
 }

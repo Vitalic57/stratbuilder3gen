@@ -38,12 +38,14 @@ calcStat_.Strategy <- function(this, s, start, end){
   period <- paste('per', start, end, sep = '_')
   if(!is.null(s[['depends']])){
     for(x in s[['depends']]){
-      if(is.null(this$backtest$stats[[period]][[x]])){
-        if(is.null(this$report_stats[[x]])){
-          s1 <- acceptable_stats[[x]]
-        }else{
-          s1 <- this$report_stats[[x]]
-        }
+      if(is.null(this$report_stats[[x]])){
+        s1 <- acceptable_stats[[x]]
+      }else{
+        s1 <- this$report_stats[[x]]
+      }
+      if(!s1$general && is.null(this$backtest$stats[[period]][[x]])){
+        calcStat_(this, s1, start, end)
+      }else if(s1$general && is.null(this$backtest$results[[x]])){
         calcStat_(this, s1, start, end)
       }
     }
@@ -195,11 +197,13 @@ get_backtest_end_index <- function(this, end){
 #' @param this Strategy
 #' @param start numeric / Date / character, start of the period
 #' @param end numeric / Date / character, end of the period
+#' @param recalc logical, whether recalculate report or not
 #'
 #' @export
 #' @method getReport Strategy
-getReport.Strategy <- function(this, start, end, returns = 'tibble'){
-  res <- calcStat(this, acceptable_stats$report, start, end)
+#' @rdname getReport
+getReport.Strategy <- function(this, start, end, returns = 'tibble', recalc=FALSE){
+  res <- calcStat(this, acceptable_stats$report, start, end, recalc)
   if(returns == 'tibble'){
     return(res %>% {tibble::as_tibble(.)})
   }
@@ -215,6 +219,7 @@ getReport.Strategy <- function(this, start, end, returns = 'tibble'){
 #' @param end numeric / Date / character, end of the period
 #' @export
 #' @method getTrades Strategy
+#' @rdname getTrades
 getTrades.Strategy <- function(this, start, end){
   return(calcStat(this, acceptable_stats$trades, start, end))
 }

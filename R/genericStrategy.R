@@ -274,7 +274,7 @@ plotReturns <- function(this, ...){
 
 
 #' @export
-getReport <- function(this, start, end){
+getReport <- function(this, start, end, returns, recalc){
   UseMethod("getReport", this)
 }
 

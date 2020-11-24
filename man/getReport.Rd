@@ -4,7 +4,7 @@
 \alias{getReport.Strategy}
 \title{Get report of Strategy}
 \usage{
-\method{getReport}{Strategy}(this, start, end, returns = "tibble")
+\method{getReport}{Strategy}(this, start, end, returns = "tibble", recalc = FALSE)
 }
 \arguments{
 \item{this}{Strategy}
@@ -12,6 +12,8 @@
 \item{start}{numeric / Date / character, start of the period}
 
 \item{end}{numeric / Date / character, end of the period}
+
+\item{recalc}{logical, whether recalculate report or not}
 }
 \description{
 Get report of Strategy

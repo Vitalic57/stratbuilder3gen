@@ -38,4 +38,4 @@ Suggests:
         knitr
 Remotes: Vitalic57/datastorage3pub
 VignetteBuilder: knitr
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1

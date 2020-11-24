@@ -4,7 +4,7 @@
 \alias{precalcStat}
 \title{Calculate statistic}
 \usage{
-precalcStat(this, s, start, end)
+precalcStat(this, s, start, end, recalc)
 }
 \arguments{
 \item{this}{Strategy}
@@ -14,6 +14,8 @@ precalcStat(this, s, start, end)
 \item{start}{numeric, start of the period}
 
 \item{end}{numeric, end of the period}
+
+\item{recalc}{logical, whether stat will be recalculated with all dependent or evaluated on the basis of precalculated stats}
 }
 \description{
 Statistic and all dependent statistics will be calculated where possible

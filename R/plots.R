@@ -44,7 +44,7 @@ plotPnL.Strategy <- function(this,
            if(leg %in% c('all', 'sum')){
              df <- cbind(
                data.frame(date=dates),
-               data.frame(PnL = init_money + calcStat(this, acceptable_stats$pnl_, !!range_start, !!range_end) +
+               data.frame(PnL = init_money + calcStat(this, acceptable_stats$pnl_, range_start, range_end) +
                             rowSums(apply( (1 - comOn) * e$results$commissions_table, 2, cumsum)))
              )[range,]
            }else if(is.numeric(leg)){

@@ -379,8 +379,9 @@ calcStat_ <- function(this, s, start, end){
 #' @param s Stat
 #' @param start numeric, start of the period
 #' @param end numeric, end of the period
+#' @param recalc logical, whether stat will be recalculated with all dependent or evaluated on the basis of precalculated stats
 #' @rdname precalcStat
 #' @export
-precalcStat <- function(this, s, start, end){
+precalcStat <- function(this, s, start, end, recalc){
   UseMethod('precalcStat', this)
 }

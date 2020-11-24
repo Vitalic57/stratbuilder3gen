@@ -339,9 +339,22 @@ getSavedModels <- function(this){
 #' @param s Stat
 #' @param start numeric, start of the period
 #' @param end numeric, end of the period
+#' @param recalc logical, whether stat will be recalculated with all dependent or evaluated on the basis of precalculated stats
 #' @export
-calcStat <- function(this, s, start, end){
+calcStat <- function(this, s, start, end, recalc){
   UseMethod("calcStat", this)
+}
+
+#' Erase statistic
+#'
+#' Statistic and all dependent statistics will be erased for recalculation
+#'
+#' @param this Strategy
+#' @param s Stat
+#' @param start numeric, start of the period
+#' @param end numeric, end of the period
+eraseStat <- function(this, s, start, end){
+  UseMethod("eraseStat", this)
 }
 
 

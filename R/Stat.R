@@ -61,7 +61,7 @@ format.Stat <- function(stat){
       }else{
         tmp <- stat[[key]]
       }
-      text <- paste0(text, '    ',  key, ': ', tmp, '\n')
+      text <- paste0(text, '    ',  key, ': ', paste0(tmp, collapse = ', '), '\n')
     }
   }
   return(text)

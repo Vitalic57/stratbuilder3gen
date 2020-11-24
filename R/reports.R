@@ -3,7 +3,6 @@
 #' @rdname calcStat
 calcStat.Strategy <- function(this, s, start, end, recalc=FALSE){
   args <- rlang::enexprs(s=s, start=start, end=end)
-  eval(rlang::call2('precalcStat', this=quote(this), !!!args))
   start <- get_backtest_start_index(this, start)
   end <- get_backtest_end_index(this, end)
   period <- paste('per', start, end, sep = '_')
@@ -21,6 +20,12 @@ calcStat.Strategy <- function(this, s, start, end, recalc=FALSE){
     }
   }else{
     eraseStat(this, s, start, end)
+  }
+  eval(rlang::call2('precalcStat', this=quote(this), !!!args))
+  if(!s$general && s$name %in% names(this$backtest$stats[[period]])){
+    return(this$backtest$stats[[period]][[s$name]])
+  }else if(s$general && s$name %in% names(this$backtest$results)){
+    return(this$backtest$results[[s$name]])
   }
   calcStat_(this, s, start, end)
 }
@@ -195,7 +200,7 @@ get_backtest_end_index <- function(this, end){
 #' @export
 #' @method getReport Strategy
 getReport.Strategy <- function(this, start, end, returns = 'tibble'){
-  res <- calcStat(this, acceptable_stats$report, start, end)
+  res <- calcStat(this, acceptable_stats$report, !!start, !!end)
   if(returns == 'tibble'){
     return(res %>% {tibble::as_tibble(.)})
   }
@@ -212,5 +217,5 @@ getReport.Strategy <- function(this, start, end, returns = 'tibble'){
 #' @export
 #' @method getTrades Strategy
 getTrades.Strategy <- function(this, start, end){
-  return(calcStat(this, acceptable_stats$trades, start, end))
+  return(calcStat(this, acceptable_stats$trades, !!start, !!end))
 }

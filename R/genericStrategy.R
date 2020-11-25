@@ -322,6 +322,7 @@ installParams <- function(this, param.combo){
   UseMethod("installParams", this)
 }
 
+
 #' Return Saved Models
 #'
 #' @param this Strategy
@@ -336,12 +337,13 @@ getSavedModels <- function(this){
 #' Statistic and all dependent statistics will be calculated
 #'
 #' @param this Strategy
-#' @param s Stat
+#' @param s Stat or function function(this, start, end){...}
 #' @param start numeric, start of the period
 #' @param end numeric, end of the period
 #' @param recalc logical, whether stat will be recalculated with all dependent or evaluated on the basis of precalculated stats
+#' @param ... params to Stat if s is a function
 #' @export
-calcStat <- function(this, s, start, end, recalc){
+calcStat <- function(this, s, start, end, recalc, ...){
   UseMethod("calcStat", this)
 }
 

@@ -5,20 +5,22 @@
 \alias{calcStat.Strategy}
 \title{Calculate statistic}
 \usage{
-calcStat(this, s, start, end, recalc)
+calcStat(this, s, start, end, recalc, ...)
 
-\method{calcStat}{Strategy}(this, s, start, end, recalc = FALSE)
+\method{calcStat}{Strategy}(this, s, start, end, recalc = FALSE, ...)
 }
 \arguments{
 \item{this}{Strategy}
 
-\item{s}{Stat}
+\item{s}{Stat or function function(this, start, end){...}}
 
 \item{start}{numeric, start of the period}
 
 \item{end}{numeric, end of the period}
 
 \item{recalc}{logical, whether stat will be recalculated with all dependent or evaluated on the basis of precalculated stats}
+
+\item{...}{params to Stat if s is a function}
 }
 \description{
 Statistic and all dependent statistics will be calculated

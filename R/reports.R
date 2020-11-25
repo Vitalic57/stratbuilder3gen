@@ -1,7 +1,12 @@
 #' @export
 #' @method calcStat Strategy
 #' @rdname calcStat
-calcStat.Strategy <- function(this, s, start, end, recalc=FALSE){
+calcStat.Strategy <- function(this, s, start, end, recalc=FALSE, ...){
+  if(is.function(s)){
+    ss <- Stat(func = s, ...)
+  }else{
+    ss <- s
+  }
   start <- get_backtest_start_index(this, start)
   end <- get_backtest_end_index(this, end)
   period <- paste('per', start, end, sep = '_')
@@ -12,21 +17,21 @@ calcStat.Strategy <- function(this, s, start, end, recalc=FALSE){
     this$backtest$stats[[period]] <- list()
   }
   if(!recalc){
-    if(!s$general && s$name %in% names(this$backtest$stats[[period]])){
-      return(this$backtest$stats[[period]][[s$name]])
-    }else if(s$general && s$name %in% names(this$backtest$results)){
-      return(this$backtest$results[[s$name]])
+    if(!ss$general && ss$name %in% names(this$backtest$stats[[period]])){
+      return(this$backtest$stats[[period]][[ss$name]])
+    }else if(ss$general && ss$name %in% names(this$backtest$results)){
+      return(this$backtest$results[[ss$name]])
     }
   }else{
-    eraseStat(this, s, start, end)
+    eraseStat(this, ss, start, end)
   }
-  precalcStat(this, s, start, end, recalc)
-  if(!s$general && s$name %in% names(this$backtest$stats[[period]])){
-    return(this$backtest$stats[[period]][[s$name]])
-  }else if(s$general && s$name %in% names(this$backtest$results)){
-    return(this$backtest$results[[s$name]])
+  precalcStat(this, ss, start, end, recalc)
+  if(!ss$general && ss$name %in% names(this$backtest$stats[[period]])){
+    return(this$backtest$stats[[period]][[ss$name]])
+  }else if(ss$general && ss$name %in% names(this$backtest$results)){
+    return(this$backtest$results[[ss$name]])
   }
-  calcStat_(this, s, start, end)
+  calcStat_(this, ss, start, end)
 }
 
 
@@ -38,11 +43,16 @@ calcStat.Strategy <- function(this, s, start, end, recalc=FALSE){
 calcStat_.Strategy <- function(this, s, start, end){
   period <- paste('per', start, end, sep = '_')
   if(!is.null(s[['depends']])){
+    nms <- sapply(this$report_stats, "[[", 'name')
     for(x in s[['depends']]){
-      if(is.null(this$report_stats[[x]])){
+      ind <- which(nms == x)[1]
+      if(length(ind) == 0){
         s1 <- acceptable_stats[[x]]
       }else{
-        s1 <- this$report_stats[[x]]
+        s1 <- this$report_stats[[ind]]
+      }
+      if(is.null(s1)){
+        stop(paste('No such stat', x))
       }
       if(!s1$general && is.null(this$backtest$stats[[period]][[x]])){
         calcStat_(this, s1, start, end)

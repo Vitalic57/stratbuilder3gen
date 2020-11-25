@@ -72,4 +72,8 @@ format.Stat <- function(stat){
 print.Stat <- function(stat){
   cat(format(stat))
 }
-#
+
+#' @export
+is.Stat <- function(stat){
+  inherits(stat, 'Stat')
+}

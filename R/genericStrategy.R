@@ -288,7 +288,8 @@ addDistribution <- function(this,
                             component.type,
                             component.label,
                             variable,
-                            label){
+                            label,
+                            ...){
   UseMethod("addDistribution", this)
 }
 
@@ -386,4 +387,9 @@ calcStat_ <- function(this, s, start, end){
 #' @export
 precalcStat <- function(this, s, start, end, recalc){
   UseMethod('precalcStat', this)
+}
+
+
+calcBacktestResults <- function(this){
+  UseMethod("calcBacktestResults", this)
 }

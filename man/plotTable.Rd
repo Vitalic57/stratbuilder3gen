@@ -11,8 +11,7 @@ plotTable(
   size = NULL,
   color = NULL,
   symbol = NULL,
-  size_scale = 20,
-  omitcols = NULL
+  size_scale = 20
 )
 }
 \arguments{
@@ -29,8 +28,6 @@ plotTable(
 \item{symbol}{character/expression type, axis symbol, default NULL}
 
 \item{size_scale}{numeric type, point size, default 20}
-
-\item{omitcols}{character vector, names of columns that should be omitted}
 }
 \value{
 plot_ly object

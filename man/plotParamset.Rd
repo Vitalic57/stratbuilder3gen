@@ -7,23 +7,30 @@
 \usage{
 \method{plotParamset}{data.frame}(
   df,
-  x = "sharpe.ann",
-  y = "return.pos.drawdown",
+  x = NULL,
+  y = NULL,
   size = NULL,
-  color = "trades.year",
+  color = NULL,
   symbol = NULL,
-  size_scale = 20,
-  omitcols = c("median", "max.loose", "max.win", "in.pos.positive", "straight.t")
+  size_scale = 20
 )
 
-\method{plotParamset}{Strategy}(this, ...)
+\method{plotParamset}{Strategy}(
+  this,
+  x = NULL,
+  y = NULL,
+  size = NULL,
+  color = NULL,
+  symbol = NULL,
+  size_scale = 20
+)
 }
 \arguments{
 \item{df}{data.frame}
 
-\item{x}{character/expression type, axis x, default "sharpe.ann"}
+\item{x}{character/expression type, axis x, default NULL}
 
-\item{y}{character/expression type, axis y, default "sortino.ann"}
+\item{y}{character/expression type, axis y, default NULL}
 
 \item{size}{character/expression type, axis size, default NULL}
 
@@ -33,15 +40,9 @@
 
 \item{size_scale}{numeric type, point size, default 20}
 
-\item{omitcols}{character vector, names of columns that should be omitted}
-
 \item{this}{Strategy}
-
-\item{...}{params}
 }
 \value{
-plot_ly object
-
 plot_ly object
 }
 \description{

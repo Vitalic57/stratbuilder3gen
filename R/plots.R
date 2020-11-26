@@ -471,16 +471,10 @@ plotCapital.Strategy <- function(this,
 #' @param color character/expression type, axis color, default NULL
 #' @param symbol character/expression type, axis symbol, default NULL
 #' @param size_scale numeric type, point size, default 20
-#' @param omitcols character vector, names of columns that should be omitted
 #' @return plot_ly object
 #' @export
 #' @rdname plotTable
-plotTable <- function(df, x=NULL, y=NULL ,size=NULL, color=NULL, symbol=NULL, size_scale = 20, omitcols = NULL){
-  for(xx in omitcols){
-    if(xx %in% colnames(df)){
-      df[[xx]] <- NULL
-    }
-  }
+plotTable <- function(df, x=NULL, y=NULL ,size=NULL, color=NULL, symbol=NULL, size_scale = 20){
   x <- rlang::enexpr(x)
   y <- rlang::enexpr(y)
   size <- rlang::enexpr(size)
@@ -533,7 +527,6 @@ plotTable <- function(df, x=NULL, y=NULL ,size=NULL, color=NULL, symbol=NULL, si
                                              sizemin = 2,
                                              sizemode = 'area',
                                              sizeref = sizeref))
-  #print(expr)
   eval(expr)
 }
 
@@ -547,32 +540,36 @@ plotTable <- function(df, x=NULL, y=NULL ,size=NULL, color=NULL, symbol=NULL, si
 #' @param size character/expression type, axis size, default NULL
 #' @param color character/expression type, axis color, default NULL
 #' @param symbol character/expression type, axis symbol, default NULL
-#' @param omitcols character vector, names of columns that should be omitted
 #' @param size_scale numeric type, point size, default 20
 #'
 #' @return plot_ly object
 #' @export
 #' @rdname plotParamset
 #' @method plotParamset data.frame
-plotParamset.data.frame <- function(df, x = "sharpe.ann", y = "return.pos.drawdown", size = NULL,
-                                    color = "trades.year", symbol = NULL, size_scale = 20,
-                                    omitcols = c("median", "max.loose", "max.win", "in.pos.positive", "straight.t")){
+plotParamset.data.frame <- function(df, x = NULL, y = NULL, size = NULL,
+                                    color = NULL, symbol = NULL, size_scale = 20){
   cl <- rlang::call2('plotTable', !!!rlang::enexprs(df=df, x=x, y=y, size=size, color=color, symbol=symbol,
-                                                    size_scale=size_scale, omitcols=omitcols))
+                                                    size_scale=size_scale))
   eval(cl)
 }
 
 #' Plot backtests results in 5-D graph
 #'
 #' @param this Strategy
-#' @param ... params
+#' @param x character/expression type, axis x, default NULL
+#' @param y character/expression type, axis y, default NULL
+#' @param size character/expression type, axis size, default NULL
+#' @param color character/expression type, axis color, default NULL
+#' @param symbol character/expression type, axis symbol, default NULL
+#' @param size_scale numeric type, point size, default 20
 #'
-#' @return plot_ly object
 #' @export
 #' @rdname plotParamset
 #' @method plotParamset Strategy
-plotParamset.Strategy <- function(this, ...){
-  cl <- rlang::call2('plotParamset.data.frame', df=quote(getBacktestResults(this)), !!!rlang::enexprs(...))
+plotParamset.Strategy <- function(this, x = NULL, y = NULL, size = NULL,
+                                  color = NULL, symbol = NULL, size_scale = 20){
+  cl <- rlang::call2('plotParamset.data.frame', df=quote(getBacktestResults(this)),
+                     !!!rlang::enexprs(x=x, y=y, size=size, color=color, symbol=symbol, size_scale=size_scale))
   eval(cl)
 }
 

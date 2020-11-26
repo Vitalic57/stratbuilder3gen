@@ -83,8 +83,10 @@ Rule <- function(type='enter',
   if(!type %in% c('enter','exit')){
     stop('wrong type! It must be enter or exit')
   }
+  position <- rlang::enexpr(position)
+  position_const <- rlang::enexpr(position_const)
   if(type =='enter' && is.null(position) && is.null(position_const) ){
-    position_const = quote(floor(getMoney(this) / data$mat$close[i,] / ncol(data$mat$close)))
+    position_const <- quote(floor(getMoney(this) / data$mat[[data$price_table]][i,] / ncol(data$mat[[data$price_table]])))
   }
   dots <- rlang::enexprs(...)
   dots[['name']] <- gsub('\\.','_', dots[['name']])
@@ -110,8 +112,8 @@ Rule <- function(type='enter',
   signal <- Signal(...)
   with(signal, {
     price <- rlang::enexpr(price)
-    position <- rlang::enexpr(position)
-    position_const <- rlang::enexpr(position_const)
+    position <- position
+    position_const <- position_const
     on_success <- rlang::enexpr(on_success)
     pathwise <- pathwise
     block <- block

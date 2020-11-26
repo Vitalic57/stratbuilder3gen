@@ -51,6 +51,7 @@ setParams.Strategy <- function(this,
                                ...){
   type <- params_switcher(type)
   this$params[[type]] <- c(args, list(...))
+  return(invisible(this))
 }
 
 

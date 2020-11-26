@@ -45,7 +45,7 @@ calcStat_.Strategy <- function(this, s, start, end){
   if(!is.null(s[['depends']])){
     nms <- sapply(this$report_stats, "[[", 'name')
     for(x in s[['depends']]){
-      ind <- which(nms == x)[1]
+      ind <- which(nms == x)
       if(length(ind) == 0){
         s1 <- acceptable_stats[[x]]
       }else{

@@ -20,7 +20,7 @@ installParams.Strategy <- function(this, param.combo){
       param.combo <- as.data.frame(as.list(param.combo))
     }
   }
-  install.param.combo(this$thisEnv, param.combo)
+  install.param.combo(this, param.combo)
 }
 
 
@@ -33,6 +33,7 @@ install.param.combo <- function (strategy, param.combo){
   if (is.null(dim(param.combo))) {
     stop("'param.combo' must have a dim attribute")
   }
+  paramset <- strategy$paramset
   ind_names <- sapply(strategy$indicators, function(x) x$name)
   rule_names <- sapply(strategy$rules, function(x) x$name)
   rule_constraint_names <- sapply(strategy$rule_constraints, function(x) x$name)
@@ -119,51 +120,55 @@ install.param.combo <- function (strategy, param.combo){
 
 
 
-#' Adds distribution
+#' Add distribution
 #'
 #' @param this Strategy
 #' @param component.type character, one of rule, indicator, params
-#' @param component.label character vector, name of component, argument 'as' is resposible for that
-#' @param variable list, each cell should be named and this name should coincise with one of your arguments.
-#' @param label character, name for this distribution
-#' @param ... arguments for variable
+#' @param component.label character vector, name of component, argument \code{name} is resposible for that.
+#' If component.type is \code{params} than component.label can be omitted (default value \code{all} will be passed)
+#' or equal to argument \code{type} from \code{setParams} function
+#' @param variable list, This field should be used if name if one of your params coincide with arguments of this function,
+#' if not ... can be used. Each cell must have a name and include array, as \code{list(n = c(1, 2, 4), eps = c(0.01, 0.02))}.
+#' @param label character, name for this distribution. It only needed if constraints will be used.
+#' This label will be used there as a name for this distribution.
+#' @param ... named array of params, as \code{n = c(1, 2, 4), eps = c(0.01, 0.02)}
 #'
 #' @export
 #' @rdname addDistribution
 #' @method addDistribution Strategy
 #' @examples
 #' \dontrun{
-#' addIndicator(this, name = BBands, args = list(HLC = quote(spread), n = 20, sd = 1), as = 'bb')
-#' paramset <- "TEST"
+#' addIndicator(this, name = 'bb', expr = {
+#'    BBands(data$mat$close[range, 1], n = n , sd = nsd)
+#'  }, args = list(n = 30, nsd = 1))
 #' addDistribution(this,
-#'     paramset.label = paramset,
 #'     component.type = 'indicator',
 #'     component.label = 'bb',
-#'     variable = list(sd = seq(0.5,3,0.05)),
+#'     nsd = seq(0.5, 3, 0.05),
 #'     label = 'bb.sd'
 #' )
 #'
-#' addRule(this, as = 'bb_up_dn',
-#'      condition = (Lag(spread, 1) > Lag(bb[, 'up'], 1)) &
+#' addRule(this, name = 'bb_up_dn',
+#'      expr = (Lag(spread, 1) > Lag(bb[, 'up'], 1)) &
 #'                   (spread < bb[,'up']) &
 #'                   (spread > bb[,'mavg']) &
 #'                   (abs(spread - bb[,'mavg'])  > n) ,
 #'      type = 'enter',
 #'      args = list(n = 0.005),
-#'      side = -1,
-#'      oco = 'short')
+#'      block = 'short')
 #' addDistribution(this,
 #'     component.type = 'rule',
 #'     component.label = 'bb_up_dn',
-#'     variable = list(n = seq(0.005,0.03,0.002)),
+#'     n = seq(0.005,0.03,0.002),
 #'     label = 'my_distr'
 #' )
 #' }
 addDistribution.Strategy <- function(this,
                                      component.type,
                                      component.label = NULL,
+                                     label,
                                      variable = list(),
-                                     label
+                                     ...
 ){
   if(!is.list(variable)){
     stop("Variable should be a list")
@@ -172,7 +177,9 @@ addDistribution.Strategy <- function(this,
   if(length(variable) == 0){
     stop('Variable should have length more than 0')
   }
-
+  if(is.null(this$paramset)){
+    this$paramset <- create_paramset()
+  }
   if(missing(label)){
     label <- paste0('distribution', length(this$paramset[['distributions']]) + 1)
   }else{
@@ -275,22 +282,41 @@ addDistribution.Strategy <- function(this,
   } else  if (is.function(variable[[1]])) {
     ee <- new.env()
     func_name <- deparse(substitute(variable[[1]]))
+    if(nchar(func_name) > 20){
+      func_name <- 'fun'
+    }
     assign(func_name, variable[[1]], envir = ee)
     l <- list(component.type = component.type,
               component.label = component.label,
               env = ee,
-              variable = func_name)
+              variable = list(func_name) %>% set_names(names(variable)))
 
   } else {
     l <- list(component.type = component.type,
               component.label = component.label,
               variable = variable)
   }
+  x <- paste(l$component.type, l$component.label, names(l$variable)[1], sep=':')
+  if(x %in% names(this$paramset$dict)){
+    this$paramset[['distributions']][[this$paramset$dict[[x]]]] <- NULL
+  }
+  this$paramset$dict[[x]] <- label
   this$paramset[['distributions']][[label]] <- l
 }
 
 
-#' Adds contraints to distibutions
+create_paramset <- function(){
+  e <- new.env()
+  with(e, {
+    distributions <- list()
+    constraints <- list()
+    dict <- list()
+  })
+  return(e)
+}
+
+
+#' Add contraints to distibutions
 #'
 #' @param this Strategy
 #' @param expr expression, that contains names from labels of distributions
@@ -301,30 +327,29 @@ addDistribution.Strategy <- function(this,
 #' @method addDistributionConstraint Strategy
 #' @examples
 #' \dontrun{
-#' addIndicator(this, name = BBands, args = list(HLC = quote(spread), n = 20, sd = 1), as = 'bb',
-#'         lookback = 100, plot = 'main', columns = 1:3, col = "red")
+#' addIndicators(this, vars = c('spread', 'bb'), expr = {
+#'    spread <- data$mat$close[range, ] %*% cbind(c(0.5, -0.5))
+#'    bb <- BBands(spread, n = n , sd = nsd)
+#'  }, args = list(n = 30, nsd = 1))
 #' addDistribution(this,
 #'     component.type = 'indicator',
 #'     component.label = 'bb',
-#'     variable = list(sd = seq(0.5,3,0.05)),
+#'     sd = seq(0.5,3,0.05),
 #'     label = 'bb.sd'
 #' )
 #'
-#' addRule(this, as = 'bb_up_dn',
-#'      condition = (Lag(spread,1) > Lag(bb.up,1)) &
-#'                   (spread < bb.up) &
-#'                   (spread > bb.mavg) &
-#'                   (abs(spread - bb.mavg)/spread_price  > n) ,
+#' addRule(this, name = 'bb_up_dn',
+#'      expr = (Lag(spread, 1) > Lag(bb[, 'up'],1)) &
+#'                   (spread < bb[, 'up']) &
+#'                   (spread > bb[, 'mavg']) ,
 #'      type = 'enter',
 #'      args = list(n = 0.005),
-#'      side = -1,
-#'      oco = 'short',
-#'      osFun = sameMoneyOs,
-#'      osFun_args = alist(amount = 5000000))
+#'      block = 'short',
+#'      position_const = c(-1, 1))
 #' addDistribution(this,
 #'     component.type = 'rule',
 #'     component.label = 'bb_up_dn',
-#'     variable = list(n = seq(0.005,0.03,0.002)),
+#'     n = seq(0.005,0.03,0.002),
 #'     label = 'my_distr'
 #' )
 #'

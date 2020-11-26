@@ -2,14 +2,15 @@
 % Please edit documentation in R/distributions_constraints.R
 \name{addDistribution.Strategy}
 \alias{addDistribution.Strategy}
-\title{Adds distribution}
+\title{Add distribution}
 \usage{
 \method{addDistribution}{Strategy}(
   this,
   component.type,
   component.label = NULL,
+  label,
   variable = list(),
-  label
+  ...
 )
 }
 \arguments{
@@ -17,42 +18,45 @@
 
 \item{component.type}{character, one of rule, indicator, params}
 
-\item{component.label}{character vector, name of component, argument 'as' is resposible for that}
+\item{component.label}{character vector, name of component, argument \code{name} is resposible for that.
+If component.type is \code{params} than component.label can be omitted (default value \code{all} will be passed)
+or equal to argument \code{type} from \code{setParams} function}
 
-\item{variable}{list, each cell should be named and this name should coincise with one of your arguments.}
+\item{label}{character, name for this distribution. It only needed if constraints will be used.
+This label will be used there as a name for this distribution.}
 
-\item{label}{character, name for this distribution}
+\item{variable}{list, This field should be used if name if one of your params coincide with arguments of this function,
+if not ... can be used. Each cell must have a name and include array, as \code{list(n = c(1, 2, 4), eps = c(0.01, 0.02))}.}
 
-\item{...}{arguments for variable}
+\item{...}{named array of params, as \code{n = c(1, 2, 4), eps = c(0.01, 0.02)}}
 }
 \description{
-Adds distribution
+Add distribution
 }
 \examples{
 \dontrun{
-addIndicator(this, name = BBands, args = list(HLC = quote(spread), n = 20, sd = 1), as = 'bb')
-paramset <- "TEST"
+addIndicator(this, name = 'bb', expr = {
+   BBands(data$mat$close[range, 1], n = n , sd = nsd)
+ }, args = list(n = 30, nsd = 1))
 addDistribution(this,
-    paramset.label = paramset,
     component.type = 'indicator',
     component.label = 'bb',
-    variable = list(sd = seq(0.5,3,0.05)),
+    nsd = seq(0.5, 3, 0.05),
     label = 'bb.sd'
 )
 
-addRule(this, as = 'bb_up_dn',
-     condition = (Lag(spread, 1) > Lag(bb[, 'up'], 1)) &
+addRule(this, name = 'bb_up_dn',
+     expr = (Lag(spread, 1) > Lag(bb[, 'up'], 1)) &
                   (spread < bb[,'up']) &
                   (spread > bb[,'mavg']) &
                   (abs(spread - bb[,'mavg'])  > n) ,
      type = 'enter',
      args = list(n = 0.005),
-     side = -1,
-     oco = 'short')
+     block = 'short')
 addDistribution(this,
     component.type = 'rule',
     component.label = 'bb_up_dn',
-    variable = list(n = seq(0.005,0.03,0.002)),
+    n = seq(0.005,0.03,0.002),
     label = 'my_distr'
 )
 }

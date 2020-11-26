@@ -2,7 +2,7 @@
 % Please edit documentation in R/distributions_constraints.R
 \name{addDistributionConstraint.Strategy}
 \alias{addDistributionConstraint.Strategy}
-\title{Adds contraints to distibutions}
+\title{Add contraints to distibutions}
 \usage{
 \method{addDistributionConstraint}{Strategy}(this, expr, label)
 }
@@ -14,34 +14,33 @@
 \item{label}{character, name of the constraint}
 }
 \description{
-Adds contraints to distibutions
+Add contraints to distibutions
 }
 \examples{
 \dontrun{
-addIndicator(this, name = BBands, args = list(HLC = quote(spread), n = 20, sd = 1), as = 'bb',
-        lookback = 100, plot = 'main', columns = 1:3, col = "red")
+addIndicators(this, vars = c('spread', 'bb'), expr = {
+   spread <- data$mat$close[range, ] \%*\% cbind(c(0.5, -0.5))
+   bb <- BBands(spread, n = n , sd = nsd)
+ }, args = list(n = 30, nsd = 1))
 addDistribution(this,
     component.type = 'indicator',
     component.label = 'bb',
-    variable = list(sd = seq(0.5,3,0.05)),
+    sd = seq(0.5,3,0.05),
     label = 'bb.sd'
 )
 
-addRule(this, as = 'bb_up_dn',
-     condition = (Lag(spread,1) > Lag(bb.up,1)) &
-                  (spread < bb.up) &
-                  (spread > bb.mavg) &
-                  (abs(spread - bb.mavg)/spread_price  > n) ,
+addRule(this, name = 'bb_up_dn',
+     expr = (Lag(spread, 1) > Lag(bb[, 'up'],1)) &
+                  (spread < bb[, 'up']) &
+                  (spread > bb[, 'mavg']) ,
      type = 'enter',
      args = list(n = 0.005),
-     side = -1,
-     oco = 'short',
-     osFun = sameMoneyOs,
-     osFun_args = alist(amount = 5000000))
+     block = 'short',
+     position_const = c(-1, 1))
 addDistribution(this,
     component.type = 'rule',
     component.label = 'bb_up_dn',
-    variable = list(n = seq(0.005,0.03,0.002)),
+    n = seq(0.005,0.03,0.002),
     label = 'my_distr'
 )
 

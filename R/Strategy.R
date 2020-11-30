@@ -11,8 +11,8 @@ Strategy <- function(){
     report_stats <- list()
     money <- 10^7
     created <- Sys.Date()
-    version <- list(major = packageVersion('stratbuilder3')$major,
-                    minor = packageVersion('stratbuilder3')$minor)
+    version <- list(major = packageVersion('stratbuilder3gen')$major,
+                    minor = packageVersion('stratbuilder3gen')$minor)
     # call for getting list of evaluated rules
     rules_calls <- NULL
     # if rules call needs to be recalculated at every evaluation

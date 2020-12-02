@@ -6,7 +6,6 @@
 \usage{
 \method{plotPnL}{Strategy}(
   this,
-  type = "money",
   comOn = TRUE,
   leg = "all",
   graph_type = "ggplot2",
@@ -15,14 +14,11 @@
   return_type = "plot",
   cutoff = FALSE,
   start,
-  end,
-  ...
+  end
 )
 }
 \arguments{
 \item{this}{Strategy}
-
-\item{type}{character, one of c('money','trades','percents')}
 
 \item{comOn}{bool, if true then commission will be included in the 'trades' graph}
 
@@ -38,8 +34,6 @@ will be summed, if it is equal to 'sep', then pnl among legs will be plotted}
 \item{return_type}{character, plot or data}
 
 \item{cutoff}{logical, if true then vertical line will plotted on graph where model was created}
-
-\item{...}{params}
 }
 \description{
 Plot change of profit and loss through backtest period

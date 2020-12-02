@@ -4,14 +4,12 @@
 \alias{addDistributionConstraint.Strategy}
 \title{Add contraints to distibutions}
 \usage{
-\method{addDistributionConstraint}{Strategy}(this, expr, label)
+\method{addDistributionConstraint}{Strategy}(this, ...)
 }
 \arguments{
 \item{this}{Strategy}
 
-\item{expr}{expression, that contains names from labels of distributions}
-
-\item{label}{character, name of the constraint}
+\item{...}{unnamed expressions under distributions labels}
 }
 \description{
 Add contraints to distibutions
@@ -45,7 +43,7 @@ addDistribution(this,
 )
 
 addDistributionConstraint(this,
-    expr = bb.sd > my_distr * 100
+    bb.sd > my_distr * 100
 )
 }
 }

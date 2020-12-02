@@ -6,7 +6,7 @@
 \usage{
 \method{addDistribution}{Strategy}(
   this,
-  component.type,
+  component.type = "params",
   component.label = NULL,
   label,
   variable = list(),

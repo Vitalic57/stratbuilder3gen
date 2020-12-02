@@ -164,7 +164,7 @@ install.param.combo <- function (strategy, param.combo){
 #' )
 #' }
 addDistribution.Strategy <- function(this,
-                                     component.type,
+                                     component.type = 'params',
                                      component.label = NULL,
                                      label,
                                      variable = list(),
@@ -180,23 +180,28 @@ addDistribution.Strategy <- function(this,
   if(is.null(this$paramset)){
     this$paramset <- create_paramset()
   }
-  if(missing(label)){
-    label <- paste0('distribution', length(this$paramset[['distributions']]) + 1)
-  }else{
-    label <- make.names(label)
-  }
+
   if(length(variable) > 1){
     for(i in seq_along(variable)){
       cl <- call('addDistribution',
                  this = this,
                  component.type=component.type,
                  component.label=component.label,
-                 label = paste(label, names(variable)[i], sep = '.'),
+                 label = rlang::enexpr(label),
                  variable = rlang::call2('list',  !!names(variable)[i] := variable[[i]])
       )
       eval(cl)
     }
     return(invisible(NULL))
+  }
+  if(missing(label)){
+    # if(names(variable)[1] %in% names(this$paramset[['distributions']])){
+    #   label <- paste0('distribution', length(this$paramset[['distributions']]) + 1)
+    # }else{
+    label <- make.names(names(variable)[1])
+    #}
+  }else{
+    label <- make.names(label)
   }
 
   component.type <- switch(component.type,
@@ -302,6 +307,7 @@ addDistribution.Strategy <- function(this,
   }
   this$paramset$dict[[x]] <- label
   this$paramset[['distributions']][[label]] <- l
+  return(invisible(this))
 }
 
 
@@ -319,8 +325,7 @@ create_paramset <- function(){
 #' Add contraints to distibutions
 #'
 #' @param this Strategy
-#' @param expr expression, that contains names from labels of distributions
-#' @param label character, name of the constraint
+#' @param ... unnamed expressions under distributions labels
 #'
 #' @export
 #' @rdname addDistributionConstraint
@@ -354,17 +359,26 @@ create_paramset <- function(){
 #' )
 #'
 #' addDistributionConstraint(this,
-#'     expr = bb.sd > my_distr * 100
+#'     bb.sd > my_distr * 100
 #' )
 #' }
 addDistributionConstraint.Strategy <- function(this,
-                                               expr,
-                                               label
+                                               ...
 ){
-  if(missing(label)){
-    label <- paste0('constraint', length(this$paramset[['constraints']]) + 1)
+  l <- rlang::enexprs(...)
+  if(length(l) > 1){
+    for(x in l){
+      addDistributionConstraint(this, !!x)
+    }
   }
-  this$paramset[['constraints']][[label]] <- list(expr = substitute(expr))
+  expr <- l[[1]]
+  for(name in names(this$paramset$constraints)){
+    if(this$paramset$constraints[[name]]$expr == expr){
+      return(invisible(this))
+    }
+  }
+  this$paramset[['constraints']][[length(this$paramset[['constraints']]) + 1]] <- list(expr = expr)
+  return(invisible(this))
 }
 
 

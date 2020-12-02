@@ -9,7 +9,7 @@
 #' @param ... args passed to subclasses
 #'
 #' @export
-#' @rdname Signal
+#' @rdname SignalClass
 Signal <- function(expr,
                    name,
                    lookback = 0,
@@ -34,11 +34,11 @@ Signal <- function(expr,
 #' If it is expression then it should return logical. It will indicate recalculate indicators or not.
 #' @param history logical, whether it expressed as matrix of previous and future values or expressed as statistic that recalculated
 #' when lookforward triggers
-#' @param vars character vector, which names should exported from expr
+#' @param vars character vector, which names should be exported from expr
 #' @param ... args passed to Signal
 #'
 #' @export
-#' @rdname Signal
+#' @rdname IndicatorClass
 Indicator <- function(lookforward=Inf,
                       history=TRUE,
                       vars=NULL,
@@ -71,7 +71,7 @@ Indicator <- function(lookforward=Inf,
 #' @param ... args passed to Signal
 #'
 #' @export
-#' @rdname Signal
+#' @rdname RuleClass
 Rule <- function(type='enter',
                  block,
                  pathwise = FALSE,
@@ -134,7 +134,7 @@ Rule <- function(type='enter',
 #' @param ... args passed to Signal
 #'
 #' @export
-#' @rdname Signal
+#' @rdname RuleConstraintClass
 RuleConstraint <- function(
                  rules=NULL,
                  rule_type=NULL,

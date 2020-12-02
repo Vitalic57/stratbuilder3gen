@@ -4,21 +4,28 @@
 #' indicators must return data.frame or matrix or array
 #'
 #' @param this model
-#' @param ... params
+#' @inheritParams Indicator
+#' @inheritParams Signal
 #'
-#' @rdname Signal
+#' @rdname addIndicators
 #' @method addIndicators Strategy
 #' @export
 addIndicators.Strategy <- function(this,
-                                   ...){
-  dots <- rlang::enexprs(...)
+                                   expr,
+                                   name,
+                                   lookback = 0,
+                                   args = list(),
+                                   lookforward=Inf,
+                                   history=TRUE,
+                                   vars=NULL
+                                   ){
   nms <- sapply(this$indicators, '[[', 'name')
   i <- 0
   while(TRUE){
-    if(! 'name' %in% names(dots)){
-      tmp <- paste0('rule', length(this$indicators) + 1 + i)
+    if(missing(name)){
+      tmp <- paste0('indicator', length(this$indicators) + 1 + i)
       if(!tmp %in% nms){
-        dots[['name']] <- tmp
+        name <- tmp
         break
       }
     }else{
@@ -26,7 +33,14 @@ addIndicators.Strategy <- function(this,
     }
     i <- i + 1
   }
-  this$indicators[[dots[['name']]]] <- do.call('Indicator', args = dots)
+  args <- rlang::enexprs(expr=expr,
+                         name=name,
+                         lookback =lookback,
+                         args = args,
+                         lookforward=lookforward,
+                         history=history,
+                         vars=vars)
+  this$indicators[[name]] <- do.call('Indicator', args = args)
   return(invisible(this))
 }
 
@@ -35,21 +49,31 @@ addIndicators.Strategy <- function(this,
 #'
 #'
 #' @param this Strategy
-#' @param ... params
-#' @rdname Signal
+#' @inheritParams Signal
+#' @inheritParams Rule
+#' @rdname addRule
 #' @method addRule Strategy
 #' @export
 addRule.Strategy <- function(this,
-                             ...
+                             expr,
+                             name,
+                             lookback = 0,
+                             args = list(),
+                             type = 'enter',
+                             block,
+                             pathwise = FALSE,
+                             position = NULL,
+                             position_const = NULL,
+                             price = NULL,
+                             on_success = NULL
 ){
-  dots <- rlang::enexprs(...)
   nms <- sapply(this$rules, '[[', 'name')
   i <- 0
   while(TRUE){
-    if(! 'name' %in% names(dots)){
+    if(missing(name)){
       tmp <- paste0('rule', length(this$rules) + 1 + i)
       if(!tmp %in% nms){
-        dots[['name']] <- tmp
+        name <- tmp
         break
       }
     }else{
@@ -57,7 +81,18 @@ addRule.Strategy <- function(this,
     }
     i <- i + 1
   }
-  this$rules[[dots[['name']]]] <- do.call('Rule', args = dots)
+  args <- rlang::enexprs(expr = expr,
+                          name = name,
+                          lookback = lookback,
+                          args = args,
+                          type = type,
+                          block = block,
+                          pathwise = pathwise,
+                          position = position,
+                          position_const = position_const,
+                          price = price,
+                          on_success = on_success)
+  this$rules[[name]] <- do.call('Rule', args = args)
   return(invisible(this))
 }
 
@@ -66,21 +101,27 @@ addRule.Strategy <- function(this,
 #'
 #'
 #' @param this Strategy
-#' @param ... params
-#' @rdname Signal
+#' @inheritParams Signal
+#' @inheritParams RuleConstraint
+#'
+#' @rdname addRuleConstraint
 #' @method addRuleConstraint Strategy
 #' @export
 addRuleConstraint.Strategy <- function(this,
-                                       ...
+                                       expr,
+                                       name,
+                                       lookback = 0,
+                                       args = list(),
+                                       rules=NULL,
+                                       rule_type=NULL
 ){
-  dots <- rlang::enexprs(...)
   nms <- sapply(this$rule_contraints, '[[', 'name')
   i <- 0
   while(TRUE){
-    if(! 'name' %in% names(dots)){
-      tmp <- paste0('rule', length(this$rule_contraints) + 1 + i)
+    if(missing(name)){
+      tmp <- paste0('rule_constraint', length(this$rule_contraints) + 1 + i)
       if(!tmp %in% nms){
-        dots[['name']] <- tmp
+        name <- tmp
         break
       }
     }else{
@@ -88,7 +129,13 @@ addRuleConstraint.Strategy <- function(this,
     }
     i <- i + 1
   }
-  this$rule_contraints[[dots[['name']]]] <- do.call('RuleConstraint', args = dots)
+  args <- rlang::enexprs(expr = expr,
+                          name = name,
+                          lookback = lookback,
+                          args = args,
+                          rules = rules,
+                          rule_type = rule_type)
+  this$rule_contraints[[name]] <- do.call("RuleConstraint", args = args)
   return(invisible(this))
 }
 

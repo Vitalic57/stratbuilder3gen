@@ -1,13 +1,11 @@
 #' Plot change of profit and loss through backtest period
 #'
 #' @param this Strategy
-#' @param type character, one of c('money','trades','percents')
 #' @param leg numeric/character, number or numbers of legs, if it is equal to 'all' or 'sum', then all pnl among all legs
 #' will be summed, if it is equal to 'sep', then pnl among legs will be plotted
 #' @param graph_type character, ggplot2 or xts
 #' @param each_year logical, if TRUE, then each graph will start with 0 each year
 #' @param adjust logical, if TRUE, then values will be divided by getMoney(this)
-#' @param ... params
 #' @param comOn bool, if true then commission will be included in the 'trades' graph
 #' @param return_type character, plot or data
 #' @param cutoff logical, if true then vertical line will plotted on graph where model was created
@@ -16,7 +14,6 @@
 #' @rdname plotPnL
 #' @method plotPnL Strategy
 plotPnL.Strategy <- function(this,
-                             type = 'money',
                              comOn = TRUE,
                              leg = 'all',
                              graph_type = 'ggplot2',
@@ -25,159 +22,96 @@ plotPnL.Strategy <- function(this,
                              return_type = 'plot',
                              cutoff = FALSE,
                              start,
-                             end,
-                             ...){
-  e <- this$backtest
-  legs <- leg
-  leg <- legs[1]
-  switch(type,
-         money = {
-           dates <- getDateByIndex(this)
-           dots <- list(...)
-           range_start <- get_backtest_start_index(this, start)
-           range_end <- get_backtest_end_index(this, end)
-           if(range_start > range_end){
-             stop("start > end")
-           }
-           range <- range_start:range_end
-           init_money <- getMoney(this)  #e$results$money[range_start,]
-           if(leg %in% c('all', 'sum')){
-             df <- cbind(
-               data.frame(date=dates),
-               data.frame(PnL = init_money + calcStat(this, acceptable_stats$pnl_, range_start, range_end) +
-                            rowSums(apply( (1 - comOn) * e$results$commissions_table, 2, cumsum)))
-             )[range,]
-           }else if(is.numeric(leg)){
-             leg <- legs
-             df <- cbind(
-               data.frame(date=dates),
-               data.frame(PnL = init_money + e$results$unrealized_money[,leg] + e$results$realized_money[,leg] +
-                            cumsum((1 - comOn) * e$results$commissions_table[, leg]))
-             )[range,]
-           }else if(leg %in% c('sep', 'separate', TRUE)){
-             leg <- 'sep'
-             df <- cbind(
-               data.frame(date=dates),
-               data.frame(init_money + e$results$unrealized_money + e$results$realized_money +
-                            apply( (1 - comOn) * e$results$commissions_table, 2, cumsum)) %>%
-                 set_colnames(colnames(getModelD(this)$data_raw))
-             )[range,]
-           }
-           if(adjust){
-             df[,-1] <- df[,-1] / init_money - 1
-           }
-           if(each_year){
-             if(!adjust){
-               df[,-1] <- df[,-1] - init_money
-             }
+                             end){
+   e <- this$backtest
+   legs <- leg
+   leg <- legs[1]
+   dates <- getDateByIndex(this)
+   range_start <- get_backtest_start_index(this, start)
+   range_end <- get_backtest_end_index(this, end)
+   if(range_start > range_end){
+     stop("start > end")
+   }
+   range <- range_start:range_end
+   init_money <- getMoney(this)  #e$results$money[range_start,]
+   if(leg %in% c('all', 'sum')){
+     df <- cbind(
+       data.frame(date=dates),
+       data.frame(PnL = init_money + calcStat(this, acceptable_stats$pnl_, range_start, range_end) +
+                    rowSums(apply( (1 - comOn) * e$results$commissions_table, 2, cumsum)))
+     )[range,]
+   }else if(is.numeric(leg)){
+     leg <- legs
+     df <- cbind(
+       data.frame(date=dates),
+       data.frame(PnL = init_money + e$results$unrealized_money[,leg] + e$results$realized_money[,leg] +
+                    cumsum((1 - comOn) * e$results$commissions_table[, leg]))
+     )[range,]
+   }else if(leg %in% c('sep', 'separate', TRUE)){
+     leg <- 'sep'
+     df <- cbind(
+       data.frame(date=dates),
+       data.frame(init_money + e$results$unrealized_money + e$results$realized_money +
+                    apply( (1 - comOn) * e$results$commissions_table, 2, cumsum)) %>%
+         set_colnames(getData(this)$colnames)
+     )[range,]
+   }
+   if(adjust){
+     df[,-1] <- df[,-1] / init_money - 1
+   }
+   if(each_year){
+     if(!adjust){
+       df[,-1] <- df[,-1] - init_money
+     }
 
-             tmp <- xts(df[,-1], df[,1]) %>% set_colnames(colnames(df)[-1])
+     tmp <- xts(df[,-1], df[,1]) %>% set_colnames(colnames(df)[-1])
 
-             #last_dates <- apply.yearly(tmp, FUN = nrow ) %>% as.numeric %>% cumsum
-             last_dates <- apply.yearly(tmp, FUN = function(x) tail(x, 1) %>% index ) %>% as.numeric %>% head(-1)
+     #last_dates <- apply.yearly(tmp, FUN = nrow ) %>% as.numeric %>% cumsum
+     last_dates <- apply.yearly(tmp, FUN = function(x) tail(x, 1) %>% index ) %>% as.numeric %>% head(-1)
 
-             df <- apply.yearly(tmp, FUN = function(x) sweep(x, 2, x[1,]) ) %>%
-               {
-                 res <- list()
-                 for(i in 1:length(.)){
-                   res[[i]] <- .[[i]]
-                 }
-                 res
-               } %>%
-               Reduce('rbind', .) %>%
-               coredata %>%
-               as.data.frame %>%
-               set_colnames(colnames(tmp)) %>%
-               dplyr::mutate(date = df[, 'date'])
-           }
-           if(return_type == 'plot'){
-             if(graph_type == 'ggplot2'){
-               newdf <- reshape2::melt(df, 'date')
-               p <- ggplot2::ggplot(newdf, ggplot2::aes(x=date, y=value, color = variable) ) +
-                 ggplot2::geom_line() + ggplot2::theme_bw() + ggplot2::ggtitle("PnL money by date")
-               if(each_year){
-                 p <- p + ggplot2::geom_vline(xintercept=last_dates, linetype=4, colour="red")
-               }
-               if(cutoff && 'created' %in% names(this$thisEnv)){
-                 p <- p + ggplot2::geom_vline(xintercept=as.numeric(this$thisEnv$created), linetype=4, colour="green")
-               }
-               if(leg != 'sep'){
-                 p + ggplot2::scale_color_manual(
-                   values = c(
-                     PnL = 'darkblue'
-                   )) + ggplot2::theme(legend.position="none")
-               }else{
-                 p
-               }
-
-
-             }else{
-               ind <- which(colnames(df) == 'date')
-               plot(xts(df[,-ind], df[, ind]), format.labels = '%Y-%m-%d', main = 'PnL', ylab = 'money')
-             }
-           }else if(return_type == 'data'){
-             ind <- which(colnames(df) == 'date')
-             return(xts(df[,-ind], df[, ind]))
-           }
-
-
-         },
-         trade =,
-         trades =,
-         money_trades = ,
-         money_trade =,
-         trades_money = ,
-         trade_money = {
-           report <- getReportTrades(this,  ...)
-           init_money <- e$results$money[e$activeField['start'],]
-           if(leg %in% c('all', 'sum')){
-             tmp <- report$pnl.sum
-             if(comOn){
-               tmp <- tmp - report$com.sum
-             }
-             pnl <- cumsum(c(0,tmp)) + init_money
-           }else if(is.numeric(leg)){
-             ind_pnl <- which(grepl('pnl.asset', colnames(report)))
-             ind_com <- which(grepl('com.asset', colnames(report)))
-             pnl <- cumsum(c(0, report[, ind_pnl[leg]] - comOn * report[, ind_com[leg]]))
-           }else if(leg %in% c('sep', 'separate')){
-             ind_pnl <- which(grepl('pnl.asset', colnames(report)))
-             ind_com <- which(grepl('com.asset', colnames(report)))
-             pnl <- rbind(rep(0, length(ind_pnl)) , report[, ind_pnl] - comOn * report[, ind_com]) %>%
-               apply(2, cumsum)
-           }
-
-           if(leg == 'sep'){
-             df <- data.frame(pnl) %>%
-               set_colnames(colnames(getModelD(this)$data_raw)) %>%
-               dplyr::mutate(index = 1:nrow(pnl))
-           }else{
-             df <- data.frame(PnL = pnl, index = 1:length(pnl))
-           }
-
-           if(return_type == 'plot'){
-             if(graph_type == 'ggplot2'){
-               newdf <- reshape2::melt(df,'index')
-               p <- ggplot2::ggplot(newdf, ggplot2::aes(x= index, y = value, color = variable) ) +
-                 ggplot2::geom_line() + ggplot2::theme_bw() + ggplot2::ggtitle("PnL money by trade")
-               if(leg != 'sep'){
-                 p + ggplot2::scale_color_manual(
-                   values = c(
-                     PnL = 'darkblue'
-                   )) + ggplot2::theme(legend.position="none")
-               }else{
-                 p
-               }
-
-             }else{
-               plot(df[,-ncol(df)], type = 'l', main = 'PnL', ylab = 'money', xlab = 'trades')
-             }
-           }else if(return_type == 'data'){
-             return(xts(df[,-ncol(df)], getDateByIndex(this, as.numeric(report[,'end.ind']))))
-           }
-
+     df <- apply.yearly(tmp, FUN = function(x) sweep(x, 2, x[1,]) ) %>%
+       {
+         res <- list()
+         for(i in 1:length(.)){
+           res[[i]] <- .[[i]]
          }
-  )
+         res
+       } %>%
+       Reduce('rbind', .) %>%
+       coredata %>%
+       as.data.frame %>%
+       set_colnames(colnames(tmp)) %>%
+       dplyr::mutate(date = df[, 'date'])
+   }
+   if(return_type == 'plot'){
+     if(graph_type == 'ggplot2'){
+       newdf <- reshape2::melt(df, 'date')
+       p <- ggplot2::ggplot(newdf, ggplot2::aes(x=date, y=value, color = variable) ) +
+         ggplot2::geom_line() + ggplot2::theme_bw() + ggplot2::ggtitle("PnL money by date")
+       if(each_year){
+         p <- p + ggplot2::geom_vline(xintercept=last_dates, linetype=4, colour="red")
+       }
+       if(cutoff && 'created' %in% names(this$thisEnv)){
+         p <- p + ggplot2::geom_vline(xintercept=as.numeric(this$thisEnv$created), linetype=4, colour="green")
+       }
+       if(leg != 'sep'){
+         p + ggplot2::scale_color_manual(
+           values = c(
+             PnL = 'darkblue'
+           )) + ggplot2::theme(legend.position="none")
+       }else{
+         p
+       }
+
+
+     }else{
+       ind <- which(colnames(df) == 'date')
+       plot(xts(df[,-ind], df[, ind]), format.labels = '%Y-%m-%d', main = 'PnL', ylab = 'money')
+     }
+   }else if(return_type == 'data'){
+     ind <- which(colnames(df) == 'date')
+     return(xts(df[,-ind], df[, ind]))
+   }
 }
 
 #' Plot drawdowns
@@ -437,9 +371,9 @@ plotCapital.Strategy <- function(this,
     data.frame(Money = x)
   )[range,]
   if(leg == 'sep'){
-    colnames(df) <- c('date', colnames(getModelD(this)$data_raw))
+    colnames(df) <- c('date', getData(this)$colnames)
   }else if(is.numeric(leg)){
-    colnames(df) <- c('date', colnames(getModelD(this)$data_raw)[legs])
+    colnames(df) <- c('date', getData(this)$colnames[legs])
   }
   if(return_type == 'plot'){
     newdf <- reshape2::melt(df, 'date')

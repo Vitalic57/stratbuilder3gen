@@ -158,29 +158,60 @@ getProgramPart <- function(this, part, recalc){
 
 
 #' @export
-#' @rdname Signal
-addIndicators <- function(this, ...){
+#' @rdname addIndicators
+addIndicators <- function(this,
+                          expr,
+                          name,
+                          lookback,
+                          args,
+                          lookforward,
+                          history,
+                          vars){
   UseMethod("addIndicators", this)
 }
 
 
 #' @export
-#' @rdname Signal
-addIndicator <- function(this, ...){
+#' @rdname addIndicators
+addIndicator <- function(this,
+                         expr,
+                         name,
+                         lookback,
+                         args,
+                         lookforward,
+                         history,
+                         vars){
   UseMethod("addIndicators", this)
 }
 
 
 #' @export
-#' @rdname Signal
-addRule <- function(this, ...){
+#' @rdname addRule
+addRule <- function(this,
+                    expr,
+                    name,
+                    lookback,
+                    args,
+                    type,
+                    block,
+                    pathwise,
+                    position,
+                    position_const,
+                    price,
+                    on_success){
   UseMethod("addRule", this)
 }
 
 
 #' @export
 #' @rdname Signal
-addRuleConstraint <- function(this, ...){
+addRuleConstraint <- function(this,
+                              expr,
+                              name,
+                              lookback,
+                              args,
+                              rules,
+                              rule_type){
   UseMethod("addRuleConstraint", this)
 }
 
@@ -238,7 +269,16 @@ addVariables <- function(this, ...){
 
 
 #' @export
-plotPnL <- function(this, ...){
+plotPnL <- function(this,
+                    comOn,
+                    leg,
+                    graph_type,
+                    each_year,
+                    adjust,
+                    return_type,
+                    cutoff,
+                    start,
+                    end){
   UseMethod("plotPnL", this)
 }
 

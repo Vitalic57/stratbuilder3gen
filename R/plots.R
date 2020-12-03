@@ -377,7 +377,7 @@ plotCapital.Strategy <- function(this,
   }
   if(return_type == 'plot'){
     newdf <- reshape2::melt(df, 'date')
-    p <- ggplot2::ggplot(newdf,aes_string(x="date", y="value", color = "variable") ) +
+    p <- ggplot2::ggplot(newdf, ggplot2::aes_string(x="date", y="value", color = "variable") ) +
       ggplot2::geom_line() + ggplot2::theme_bw() + ggplot2::ggtitle("Money in position") #+ theme(legend.position = "none")
     if(leg != 'sep'){
       p + ggplot2::scale_color_manual(

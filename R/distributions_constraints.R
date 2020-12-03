@@ -173,7 +173,7 @@ addDistribution.Strategy <- function(this,
   if(!is.list(variable)){
     stop("Variable should be a list")
   }
-  variable <- c(variable, list(...))
+  variable <- c(variable, rlang::enexprs(...))
   if(length(variable) == 0){
     stop('Variable should have length more than 0')
   }
@@ -262,9 +262,11 @@ addDistribution.Strategy <- function(this,
                              }
                              component.type
                            })
+  expr_var <- variable
+  variable[[1]] <- eval(variable[[1]], env = parent.frame())
   if(is.list(variable[[1]]) && any(sapply(variable[[1]], is.function))){
     ee <- new.env()
-    q <- substitute(variable)[[-1]]
+    q <- expr_var[[1]]
     if (is.symbol(q)) {
       if (!is.null(names(variable[[1]]))) {
         nms <- names(variable[[1]])
@@ -286,7 +288,7 @@ addDistribution.Strategy <- function(this,
               variable = nms)
   } else  if (is.function(variable[[1]])) {
     ee <- new.env()
-    func_name <- deparse(substitute(variable[[1]]))
+    func_name <- paste0(deparse(expr_var[[1]]), collapse = '\n')
     if(nchar(func_name) > 20){
       func_name <- 'fun'
     }

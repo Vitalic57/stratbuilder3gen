@@ -4,18 +4,28 @@
 #' @export
 #' @rdname Lag
 Lag.matrix <- function(x, k = 1){
-  if(k > nrow(x)){
-    stop("k > nrow(x)")
+  if(abs(k) >= nrow(x)){
+    return(matrix(NA, nrow=nrow(x), ncol=ncol(x)))
   }else if (k != as.integer(k)){
-    stop("k must be a non-negative integer")
+    stop("k must be an integer")
   }else if(k < 0){
     m.na <- matrix(NA, nrow = abs(k), ncol = ncol(x))
-    ret <- rbind(tail(x, k), m.na)
+    n <- nrow(x)
+    if(ncol(x) == 1){
+      ret <- rbind(cbind(x[min(abs(k) + 1, n):n,]), m.na)
+    }else{
+      ret <- rbind(rbind(x[min(abs(k) + 1, n):n,]), m.na)
+    }
   }else if (k == 0) {
     return(x)
   }else{
     m.na <- matrix(NA, nrow = k, ncol = ncol(x))
-    ret <- rbind(m.na, head(x,-k))
+    n <- nrow(x)
+    if(ncol(x) == 1){
+      ret <- rbind(m.na, cbind(x[1:max(1, n - k),]))
+    }else{
+      ret <- rbind(m.na, rbind(x[1:max(1, n - k),]))
+    }
   }
   rownames(ret) <- NULL
   return(ret)

@@ -409,6 +409,7 @@ eraseStat <- function(this, s, start, end){
 #' @param s Stat
 #' @param start numeric, start of the period
 #' @param end numeric, end of the period
+#' @export
 calcStat_ <- function(this, s, start, end){
   UseMethod("calcStat_", this)
 }

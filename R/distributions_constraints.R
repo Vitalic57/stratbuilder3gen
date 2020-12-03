@@ -170,10 +170,16 @@ addDistribution.Strategy <- function(this,
                                      variable = list(),
                                      ...
 ){
+  var <- rlang::enexpr(variable)
   if(!is.list(variable)){
     stop("Variable should be a list")
   }
-  variable <- c(variable, rlang::enexprs(...))
+  if(length(var) > 1){
+    var <- lapply(2:length(var), function(i) var[[i]]) %>% set_names(names(var)[-1])
+  }else{
+    var <- list()
+  }
+  variable <- c(var, rlang::enexprs(...))
   if(length(variable) == 0){
     stop('Variable should have length more than 0')
   }

@@ -324,7 +324,7 @@ create_paramset <- function(){
 }
 
 
-#' Add contraints to distibutions
+#' Add constraints to distributions
 #'
 #' @param this Strategy
 #' @param ... unnamed expressions under distributions labels

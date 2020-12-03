@@ -2,7 +2,7 @@
 % Please edit documentation in R/distributions_constraints.R
 \name{addDistributionConstraint.Strategy}
 \alias{addDistributionConstraint.Strategy}
-\title{Add contraints to distibutions}
+\title{Add constraints to distributions}
 \usage{
 \method{addDistributionConstraint}{Strategy}(this, ...)
 }
@@ -12,7 +12,7 @@
 \item{...}{unnamed expressions under distributions labels}
 }
 \description{
-Add contraints to distibutions
+Add constraints to distributions
 }
 \examples{
 \dontrun{

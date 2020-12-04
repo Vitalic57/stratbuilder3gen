@@ -128,17 +128,23 @@ get_switch_stats <- function(in_report=NULL){
 
 #' Add statistic to report of strategy
 #'
-#' @param this modelStrategy
-#' @param ... params, function that accept one argument of modelStrategy object, each argument in dots should be named
+#' @param this Strategy
+#' @param ... Stats or function objects. Function should have arguments as follows function(this, start, end), where
+#'
+#' this - Strategy
+#'
+#' start - numeric index of starting point
+#'
+#' end - numeric index of ending point
 #'
 #' @examples
 #' \dontrun{
-#' addToReport(this, double_sharpe=function(this, start, end){
+#' addToReport(this, Stats$sharpe,  double_sharpe=function(this, start, end){
 #'    pnl <- getPnL(this)
 #'    dates <- getDateByIndex(this, c(start, end))
 #'    pnl <- pnl[paste0(dates[1], '/', dates[2])]
 #'    sharpes <- rollapply(diff(pnl), width = 252, FUN=SharpeRatio.mean, by=30, align='right')  %>% na.omit
-#'    SharpeRatio.mean(sharpes)
+#'    sharpes %>% {mean(.) / sd(.) * sqrt(12)}
 #' })
 #' }
 #'
@@ -185,6 +191,7 @@ addToReport.Strategy <- function(this, ...){
       this$report_stats[[s$name]] <- s
     }
   }
+  return(invisible(this))
 }
 
 

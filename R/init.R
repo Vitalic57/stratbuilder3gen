@@ -1,4 +1,5 @@
 #' @import datastorage3pub
+#' @importFrom quantmod Lag
 NULL
 
 

@@ -55,7 +55,7 @@ install.param.combo <- function (strategy, param.combo){
                    if(is.character(param.combo[,param.label]) && 'env' %in% names(distribution)){
                      strategy$indicators[[res]]$args[[variable.name]] <- get(param.combo[,param.label], distribution[['env']])
                    }else{
-                     strategy$indicators[[res]]$args[[variable.name]] <- param.combo[,param.label]
+                     strategy$indicators[[res]]$args[[variable.name]] <- param.combo[,param.label][[1]]
                    }
                  }else{
                    stop('wrong variable name')
@@ -72,7 +72,7 @@ install.param.combo <- function (strategy, param.combo){
                    if(is.character(param.combo[,param.label]) && 'env' %in% names(distribution)){
                      strategy$rules[[res]]$args[[variable.name]] <- get(param.combo[,param.label], distribution[['env']])
                    }else{
-                     strategy$rules[[res]]$args[[variable.name]] <- param.combo[,param.label]
+                     strategy$rules[[res]]$args[[variable.name]] <- param.combo[,param.label][[1]]
                    }
                  }else{
                    stop('wrong variable name')
@@ -91,7 +91,7 @@ install.param.combo <- function (strategy, param.combo){
                    if(is.character(param.combo[,param.label]) && 'env' %in% names(distribution)){
                      strategy$rule_constraints[[res]]$args[[variable.name]] <- get(param.combo[,param.label], distribution[['env']])
                    }else{
-                     strategy$rule_constraints[[res]]$args[[variable.name]] <- param.combo[,param.label]
+                     strategy$rule_constraints[[res]]$args[[variable.name]] <- param.combo[,param.label][[1]]
                    }
                  }else{
                    stop('wrong variable name')
@@ -109,7 +109,7 @@ install.param.combo <- function (strategy, param.combo){
                if(is.character(param.combo[,param.label]) && 'env' %in% names(distribution)){
                  strategy$params[[component.label]][[variable.name]] <- get(param.combo[,param.label], distribution[['env']])
                }else{
-                 strategy$params[[component.label]][[variable.name]] <- param.combo[,param.label]
+                 strategy$params[[component.label]][[variable.name]] <- param.combo[,param.label][[1]]
                }
 
              }

@@ -55,7 +55,7 @@ addIndicators.Strategy <- function(this,
 #' @method addRule Strategy
 #' @export
 addRule.Strategy <- function(this,
-                             expr,
+                             expr = TRUE,
                              name,
                              lookback = 0,
                              args = list(),

@@ -19,6 +19,7 @@ Strategy <- function(){
     recalc_rules_calls <- FALSE
     variables <- list()
     indicators <- list()
+    futchains <- list()
     rules <- list()
     rule_constraints <- list()
     objects <- list()

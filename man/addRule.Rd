@@ -22,7 +22,7 @@ addRule(
 
 \method{addRule}{Strategy}(
   this,
-  expr,
+  expr = TRUE,
   name,
   lookback = 0,
   args = list(),

@@ -44,14 +44,16 @@ plotPnL.Strategy <- function(this,
      leg <- legs
      df <- cbind(
        data.frame(date=dates),
-       data.frame(PnL = init_money + e$results$unrealized_money[,leg] + e$results$realized_money[,leg] +
+       data.frame(PnL = init_money + exchange_to_counter(this$data, e$results$unrealized_money[,leg,drop=FALSE], 1:this$data$nrow) +
+                    e$results$realized_money[,leg] +
                     cumsum((1 - comOn) * e$results$commissions_table[, leg]))
      )[range,]
-   }else if(leg %in% c('sep', 'separate', TRUE)){
+   }else if(leg %in% c('sep', 'separate')){
      leg <- 'sep'
      df <- cbind(
        data.frame(date=dates),
-       data.frame(init_money + e$results$unrealized_money + e$results$realized_money +
+       data.frame(init_money + exchange_to_counter(this$data, e$results$unrealized_money, 1:this$data$nrow) +
+                    e$results$realized_money +
                     apply( (1 - comOn) * e$results$commissions_table, 2, cumsum)) %>%
          set_colnames(getData(this)$colnames)
      )[range,]

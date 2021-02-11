@@ -14,7 +14,7 @@ addIndicator(this, expr, name, lookback, args, lookforward, history, vars)
   this,
   expr,
   name,
-  lookback = 0,
+  lookback = NULL,
   args = list(),
   lookforward = Inf,
   history = TRUE,

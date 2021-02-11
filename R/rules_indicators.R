@@ -13,7 +13,7 @@
 addIndicators.Strategy <- function(this,
                                    expr,
                                    name,
-                                   lookback = 0,
+                                   lookback = NULL,
                                    args = list(),
                                    lookforward=Inf,
                                    history=TRUE,

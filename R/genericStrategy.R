@@ -434,3 +434,31 @@ precalcStat <- function(this, s, start, end, recalc){
 calcBacktestResults <- function(this){
   UseMethod("calcBacktestResults", this)
 }
+
+
+#' @export
+#' @rdname addTradeTime
+addTradeTime <- function(this, ...){
+  UseMethod("addTradeTime", this)
+}
+
+
+#' @export
+#' @rdname getTradeTime
+getTradeTime <- function(this, type){
+  UseMethod("getTradeTime", this)
+}
+
+
+#' @export
+#' @rdname clearTradeTime
+clearTradeTime <- function(this, type){
+  UseMethod("clearTradeTime", this)
+}
+
+
+#' @export
+#' @rdname printTradeTime
+printTradeTime <- function(this, type){
+  UseMethod("printTradeTime", this)
+}

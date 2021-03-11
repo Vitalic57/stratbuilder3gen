@@ -14,4 +14,5 @@ addVariables.Strategy <- function(this, ...){
   for(name in names(dots)){
     this$variables[[name]] <- dots[[name]]
   }
+  return(invisible(this))
 }

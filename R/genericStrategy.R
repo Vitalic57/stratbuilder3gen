@@ -165,7 +165,7 @@ addIndicators <- function(this,
                           lookback,
                           args,
                           lookforward,
-                          history,
+                          # history,
                           vars){
   UseMethod("addIndicators", this)
 }
@@ -179,7 +179,7 @@ addIndicator <- function(this,
                          lookback,
                          args,
                          lookforward,
-                         history,
+                         # history,
                          vars){
   UseMethod("addIndicators", this)
 }

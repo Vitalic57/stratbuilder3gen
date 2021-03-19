@@ -6,9 +6,9 @@
 \alias{addIndicators.Strategy}
 \title{Add multiple indicators to strategy}
 \usage{
-addIndicators(this, expr, name, lookback, args, lookforward, history, vars)
+addIndicators(this, expr, name, lookback, args, lookforward, vars)
 
-addIndicator(this, expr, name, lookback, args, lookforward, history, vars)
+addIndicator(this, expr, name, lookback, args, lookforward, vars)
 
 \method{addIndicators}{Strategy}(
   this,
@@ -17,7 +17,6 @@ addIndicator(this, expr, name, lookback, args, lookforward, history, vars)
   lookback = NULL,
   args = list(),
   lookforward = Inf,
-  history = TRUE,
   vars = NULL
 )
 }
@@ -35,12 +34,11 @@ addIndicator(this, expr, name, lookback, args, lookforward, history, vars)
 \item{lookforward}{numeric / expression. If it is numeric then after that number of points all indicators will be recalculated.
 If it is expression then it should return logical. It will indicate recalculate indicators or not.}
 
-\item{history}{logical, whether it expressed as matrix of previous and future values or expressed as statistic that recalculated
-when lookforward triggers}
-
 \item{vars}{character vector, which names should be exported from expr}
 }
 \description{
-These indicators will be calculated each time when spread updates coefficients
-indicators must return data.frame or matrix or array
+Define variable via expr and name it via name. It will be recalculated each lookforward steps.
+}
+\details{
+If it needs multiple variables it can also be done via expr, but names should be pointed in vars.
 }

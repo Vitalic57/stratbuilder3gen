@@ -1,7 +1,9 @@
 #' Add multiple indicators to strategy
 #'
-#' These indicators will be calculated each time when spread updates coefficients
-#' indicators must return data.frame or matrix or array
+#' Define variable via expr and name it via name. It will be recalculated each lookforward steps.
+#'
+#' If it needs multiple variables it can also be done via expr, but names should be pointed in vars.
+#'
 #'
 #' @param this model
 #' @inheritParams Indicator
@@ -16,7 +18,7 @@ addIndicators.Strategy <- function(this,
                                    lookback = NULL,
                                    args = list(),
                                    lookforward=Inf,
-                                   history=TRUE,
+                                   # history=TRUE,
                                    vars=NULL
                                    ){
   nms <- sapply(this$indicators, '[[', 'name')
@@ -38,7 +40,7 @@ addIndicators.Strategy <- function(this,
                          lookback =lookback,
                          args = args,
                          lookforward=lookforward,
-                         history=history,
+                         # history=history,
                          vars=vars)
   this$indicators[[name]] <- do.call('Indicator', args = args)
   return(invisible(this))

@@ -25,6 +25,8 @@ Signal <- function(expr,
   return(this)
 }
 
+# @param history logical, whether it expressed as matrix of previous and future values or expressed as statistic that recalculated
+# when lookforward triggers
 
 #' Indicator constructor
 #'
@@ -32,21 +34,19 @@ Signal <- function(expr,
 #'
 #' @param lookforward numeric / expression. If it is numeric then after that number of points all indicators will be recalculated.
 #' If it is expression then it should return logical. It will indicate recalculate indicators or not.
-#' @param history logical, whether it expressed as matrix of previous and future values or expressed as statistic that recalculated
-#' when lookforward triggers
 #' @param vars character vector, which names should be exported from expr
 #' @param ... args passed to Signal
 #'
 #' @export
 #' @rdname IndicatorClass
 Indicator <- function(lookforward=Inf,
-                      history=TRUE,
+                      # history=TRUE,
                       vars=NULL,
                       ...){
   signal <- Signal(...)
   with(signal,{
     lookforward <- rlang::enexpr(lookforward)
-    history <- history
+    # history <- history
     updated <- TRUE
     vars <- vars
   })

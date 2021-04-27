@@ -174,7 +174,7 @@ plotDrawdowns.Strategy <- function(this,
 #' @method plotReturns Strategy
 plotReturns.Strategy <- function(this, type = 'MAE'){
   e <- this$backtest
-  report <- getReportTrades(this) %>%
+  report <- getTrades(this) %>%
     dplyr::mutate(ind = 1:dplyr::n())
   rets <- 'pnl.sum.adj'
   switch(type,
@@ -194,8 +194,8 @@ plotReturns.Strategy <- function(this, type = 'MAE'){
 
   df <- report[,c(rets,var)] %>%
     set_colnames(c('rets','var'))
-  p <- ggplot2::ggplot(df, aes(abs(rets),var, group = rets < 0 )) +
-    ggplot2::geom_point(aes(col = rets < 0, shape = rets  < 0) , size = 3) +
+  p <- ggplot2::ggplot(df, ggplot2::aes(abs(rets),var, group = rets < 0 )) +
+    ggplot2::geom_point(ggplot2::aes(col = rets < 0, shape = rets  < 0) , size = 3) +
     #geom_point(aes(colour = rets > 0)) +
     #scale_shape(solid = FALSE) +
     ggplot2::scale_shape_manual(values=c(24,25)) +

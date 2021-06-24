@@ -380,8 +380,8 @@ addDistributionConstraint.Strategy <- function(this,
     }
   }
   expr <- l[[1]]
-  for(name in names(this$paramset$constraints)){
-    if(this$paramset$constraints[[name]]$expr == expr){
+  for(i in seq_along(this$paramset$constraints)){
+    if(this$paramset$constraints[[i]]$expr == expr){
       return(invisible(this))
     }
   }

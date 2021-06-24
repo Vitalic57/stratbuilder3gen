@@ -198,7 +198,7 @@ addDistribution.Strategy <- function(this,
       )
       eval(cl)
     }
-    return(invisible(NULL))
+    return(invisible(this))
   }
   if(missing(label)){
     # if(names(variable)[1] %in% names(this$paramset[['distributions']])){

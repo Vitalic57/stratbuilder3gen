@@ -9,11 +9,11 @@ plotCapital(this, ...)
 
 \method{plotCapital}{Strategy}(
   this,
-  interactive_plot = TRUE,
   start_date = NULL,
   end_date = NULL,
   leg = "all",
   return_type = "plot",
+  graph_type = "ggplot2",
   ...
 )
 }
@@ -21,8 +21,6 @@ plotCapital(this, ...)
 \item{this}{modelStrategy}
 
 \item{...}{params}
-
-\item{interactive_plot}{logical, if it is TRUE then plot will be intercative}
 
 \item{start_date}{Date / character, example: start_date='2008-01-01'}
 
@@ -32,6 +30,8 @@ plotCapital(this, ...)
 capital will be plotted for each leg}
 
 \item{return_type}{character, enter 'plot' for graphical representation or 'data' for xts series.}
+
+\item{graph_type}{character, ggplot2 or plotly}
 }
 \description{
 Plot Capital of strategy

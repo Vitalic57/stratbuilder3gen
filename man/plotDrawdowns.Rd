@@ -11,7 +11,7 @@
 
 \item{return_type}{character, plot or data}
 
-\item{graph_type}{character, ggplot2 or xts}
+\item{graph_type}{character, ggplot2 / xts / plotly}
 
 \item{...}{params}
 

@@ -1,9 +1,47 @@
+add_vline = function(p, x, ...) {
+  if(length(x) > 1){
+    for(i in seq_along(x)){
+      p <- p %>% add_vline(x[i], ...)
+    }
+    return(p)
+  }
+  if(!is.null(p$x$layoutAttrs)){
+    index <- unname(which(sapply(p$x$layoutAttrs, function(x)
+      !is.null(x$shapes))))
+  } else {
+    index <- integer()
+  }
+
+  l_shape = list(
+    type = "line",
+    y0 = 0, y1 = 1, yref = "paper", # i.e. y as a proportion of visible region
+    x0 = x, x1 = x,
+    line = list(
+      ...
+    ),
+    layer = "below"
+  )
+
+  if(length(index) > 0){
+    shapes <- p$x$layoutAttrs[[index]]$shapes
+    shapes[[length(shapes) + 1]] <- l_shape
+    p$x$layoutAttrs[[index]]$shapes <- shapes
+  } else {
+    p <- plotly::layout(
+      p = p,
+      shapes = list(l_shape)
+    )
+  }
+  p
+}
+
+
 #' Plot change of profit and loss through backtest period
 #'
 #' @param this Strategy
 #' @param leg numeric/character, number or numbers of legs, if it is equal to 'all' or 'sum', then all pnl among all legs
 #' will be summed, if it is equal to 'sep', then pnl among legs will be plotted
-#' @param graph_type character, ggplot2 or xts
+#' @param graph_type character, ggplot2 / xts / plotly
 #' @param each_year logical, if TRUE, then each graph will start with 0 each year
 #' @param adjust logical, if TRUE, then values will be divided by getMoney(this)
 #' @param comOn bool, if true then commission will be included in the 'trades' graph
@@ -86,26 +124,41 @@ plotPnL.Strategy <- function(this,
        dplyr::mutate(date = df[, 'date'])
    }
    if(return_type == 'plot'){
-     if(graph_type == 'ggplot2'){
+     if(graph_type %in% c('ggplot2', 'plotly')){
        newdf <- reshape2::melt(df, 'date')
-       p <- ggplot2::ggplot(newdf, ggplot2::aes(x=date, y=value, color = variable) ) +
-         ggplot2::geom_line() + ggplot2::theme_bw() + ggplot2::ggtitle("PnL money by date")
-       if(each_year){
-         p <- p + ggplot2::geom_vline(xintercept=last_dates, linetype=4, colour="red")
-       }
-       if(cutoff && 'created' %in% names(this$thisEnv)){
-         p <- p + ggplot2::geom_vline(xintercept=as.numeric(this$thisEnv$created), linetype=4, colour="green")
-       }
-       if(leg != 'sep'){
-         p + ggplot2::scale_color_manual(
-           values = c(
-             PnL = 'darkblue'
-           )) + ggplot2::theme(legend.position="none")
+
+       if(graph_type == 'plotly'){
+         if(ncol(df) == 2){
+           p <- plotly::plot_ly(newdf, x = ~date, y = ~value, mode ='lines', type = 'scatter', line = list(color = "darkblue", width = 1.5))
+         }else{
+           p <- plotly::plot_ly(newdf, x = ~date, y = ~value, mode ='lines', type = 'scatter', color = ~variable, colors='Set1', line = list(width = 1.5))
+         }
+         p <- p %>%
+           plotly::layout(title = list(text="PnL by date", x=0.1))
+         if(each_year){
+           p <- p %>% add_vline(x=as.Date(last_dates, origin = '1970-01-01'), dash='dash', color="red")
+         }
+         if(cutoff && 'created' %in% names(this)){
+           p <- p %>% add_vline(x=this$created, dash='dash', color="green")
+         }
+         p
        }else{
+         p <- ggplot2::ggplot(newdf, ggplot2::aes(x=date, y=value, color = variable) ) +
+           ggplot2::geom_line() + ggplot2::theme_bw() + ggplot2::ggtitle("PnL money by date")
+         if(each_year){
+           p <- p + ggplot2::geom_vline(xintercept=last_dates, linetype=4, colour="red")
+         }
+         if(cutoff && 'created' %in% names(this)){
+           p <- p + ggplot2::geom_vline(xintercept=as.numeric(this$created), linetype=4, colour="green")
+         }
+         if(leg != 'sep'){
+           p <- p + ggplot2::scale_color_manual(
+             values = c(
+               PnL = 'darkblue'
+             )) + ggplot2::theme(legend.position="none")
+         }
          p
        }
-
-
      }else{
        ind <- which(colnames(df) == 'date')
        plot(xts(df[,-ind], df[, ind]), format.labels = '%Y-%m-%d', main = 'PnL', ylab = 'money')
@@ -121,7 +174,7 @@ plotPnL.Strategy <- function(this,
 #' @param this Strategy
 #' @param from character, name of backtest
 #' @param return_type character, plot or data
-#' @param graph_type character, ggplot2 or xts
+#' @param graph_type character, ggplot2 / xts / plotly
 #' @param ... params
 #'
 #' @return ggplot/xts
@@ -141,19 +194,25 @@ plotDrawdowns.Strategy <- function(this,
   }
   range <- range_start:range_end
   df <- cbind(
-    data.frame(date=dates),
-    data.frame(PnL = e$results$money - cummax(e$results$money))
-  )[range,]
+    data.frame(date=dates[range]),
+    data.frame(PnL = calcStat(this, acceptable_stats$pnl, range_start, range_end) %>% {. - cummax(.)})
+  )
   if(return_type == 'plot'){
-    if(graph_type == 'ggplot2'){
+    if(graph_type %in% c('ggplot2', 'plotly')){
       newdf <- reshape2::melt(df, 'date')
-      ggplot2::ggplot(newdf,aes(x=date, y=value, color = variable) ) +
-        ggplot2::geom_line() + ggplot2::theme_bw() + ggplot2::theme(legend.position="none") +
-        ggplot2::scale_color_manual(
-          values = c(
-            PnL = 'darkblue'
-          ))+
-        ggplot2::ggtitle("Drawdowns by date")
+
+      if(graph_type == 'plotly'){
+        return(plotly::plot_ly(newdf, x = ~date, y = ~value, mode ='lines', type = 'scatter',  line = list(color = "red", width = 1.5)) %>%
+                 plotly::layout(title = list(text="Drawdowns by date", x=0.1)))
+      }else{
+        ggplot2::ggplot(newdf, ggplot2::aes(x=date, y=value, color = variable) ) +
+          ggplot2::geom_line() + ggplot2::theme_bw() + ggplot2::theme(legend.position="none") +
+          ggplot2::scale_color_manual(
+            values = c(
+              PnL = 'red'
+            ))+
+          ggplot2::ggtitle("Drawdowns by date")
+      }
     }else{
       plot(xts(df[,'PnL'], df[,'date']), format.labels = '%Y-%m-%d', main = 'PnL', ylab = 'money')
     }
@@ -321,21 +380,21 @@ getCapital <- function(...){
 
 #' @param start_date Date / character, example: start_date='2008-01-01'
 #'
-#' @param interactive_plot logical, if it is TRUE then plot will be intercative
 #' @param leg numeric / character, numeric is responsible for capital by legs, character can be "all" then capital will be summed or it can be "sep" then
 #' capital will be plotted for each leg
 #' @param end_date Date / character, example: end_date='2018-01-01'
 #' @param return_type character, enter 'plot' for graphical representation or 'data' for xts series.
+#' @param graph_type character, ggplot2 or plotly
 #'
 #' @export
 #' @rdname plotCapital
 #' @method plotCapital Strategy
 plotCapital.Strategy <- function(this,
-                                 interactive_plot = TRUE,
                                  start_date = NULL,
                                  end_date = NULL,
                                  leg = 'all',
                                  return_type = 'plot',
+                                 graph_type = 'ggplot2',
                                  ...){
   e <- this$backtest
   dates <- getDateByIndex(this)
@@ -358,7 +417,7 @@ plotCapital.Strategy <- function(this,
   legs <- leg
   leg <- legs[1]
   if(leg == 'all'){
-    x <- e$results$money_in_pos
+    x <- calcStat(this, acceptable_stats$money_in_pos_, range_start, range_end)
     x[x == 0] <- NA
   }else if(leg == 'sep'){
     x <- e$results$money_in_pos_leg
@@ -379,18 +438,20 @@ plotCapital.Strategy <- function(this,
   }
   if(return_type == 'plot'){
     newdf <- reshape2::melt(df, 'date')
-    p <- ggplot2::ggplot(newdf, ggplot2::aes_string(x="date", y="value", color = "variable") ) +
-      ggplot2::geom_line() + ggplot2::theme_bw() + ggplot2::ggtitle("Money in position") #+ theme(legend.position = "none")
-    if(leg != 'sep'){
-      p + ggplot2::scale_color_manual(
-        values = c(
-          PnL = 'darkblue'
-        )) + ggplot2::theme(legend.position="none")
+    if(graph_type == 'plotly'){
+      return(plotly::plot_ly(newdf, x = ~date, y = ~value,
+                             mode ='lines', type = 'scatter', color = ~variable, colors='Set1', line = list(width = 1.5)) %>%
+               plotly::layout(title = list(text="Money in position", x=0.1)))
+    }else{
+      p <- ggplot2::ggplot(newdf, ggplot2::aes_string(x="date", y="value", color = "variable") ) +
+        ggplot2::geom_line() + ggplot2::theme_bw() + ggplot2::ggtitle("Money in position")
+      if(leg != 'sep'){
+        p <- p + ggplot2::scale_color_manual(
+          values = c(
+            Money = 'darkblue'
+          )) + ggplot2::theme(legend.position="none")
+      }
     }
-    if(interactive_plot){
-      return(plotly::ggplotly(p))
-    }
-    p
   }else if(return_type == 'data'){
     return(xts(df[,-1], df$date))
   }

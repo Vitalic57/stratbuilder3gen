@@ -25,7 +25,7 @@
 \item{leg}{numeric/character, number or numbers of legs, if it is equal to 'all' or 'sum', then all pnl among all legs
 will be summed, if it is equal to 'sep', then pnl among legs will be plotted}
 
-\item{graph_type}{character, ggplot2 or xts}
+\item{graph_type}{character, ggplot2 / xts / plotly}
 
 \item{each_year}{logical, if TRUE, then each graph will start with 0 each year}
 

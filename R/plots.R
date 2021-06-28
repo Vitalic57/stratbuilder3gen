@@ -448,9 +448,10 @@ plotCapital.Strategy <- function(this,
       if(leg != 'sep'){
         p <- p + ggplot2::scale_color_manual(
           values = c(
-            Money = 'darkblue'
+            Money = 'red'
           )) + ggplot2::theme(legend.position="none")
       }
+      return(p)
     }
   }else if(return_type == 'data'){
     return(xts(df[,-1], df$date))

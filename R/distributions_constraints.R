@@ -2,25 +2,38 @@
 #'
 #' @param this model
 #' @param param.combo data.frame/list/vector - parameters
+#' @param ... params
 #'
 #' @export
 #' @rdname installParams
 #' @method installParams Strategy
-installParams.Strategy <- function(this, param.combo){
-  if(!is.data.frame(param.combo)){
-    if(is.list(param.combo)){
-      if(is.null(names(param.combo))){
-        stop("list should have names")
+installParams.Strategy <- function(this, param.combo=NULL, ...){
+  if(!is.null(param.combo)){
+    if(!is.data.frame(param.combo)){
+      if(is.list(param.combo)){
+        if(is.null(names(param.combo))){
+          stop("list should have names")
+        }
+        param.combo <- as.data.frame(param.combo)
+      }else if(is.vector(param.combo)){
+        if(is.null(names(param.combo))){
+          stop("vector should have names")
+        }
+        param.combo <- as.data.frame(as.list(param.combo))
       }
-      param.combo <- as.data.frame(param.combo)
-    }else if(is.vector(param.combo)){
-      if(is.null(names(param.combo))){
-        stop("vector should have names")
-      }
-      param.combo <- as.data.frame(as.list(param.combo))
     }
   }
+  dots <- as.data.frame(list(...))
+  if(!is.null(param.combo)){
+    if(length(dots) > 0){
+      param.combo <- cbind(param.combo, dots)
+    }
+  }else{
+    param.combo <- dots
+  }
+
   install.param.combo(this, param.combo)
+  return(invisible(this))
 }
 
 

@@ -17,7 +17,8 @@ addRule(
   position,
   position_const,
   price,
-  on_success
+  on_success,
+  reopen
 )
 
 \method{addRule}{Strategy}(
@@ -32,7 +33,8 @@ addRule(
   position = NULL,
   position_const = NULL,
   price = NULL,
-  on_success = NULL
+  on_success = NULL,
+  reopen = FALSE
 )
 }
 \arguments{
@@ -60,6 +62,8 @@ vector will be used, if pathwise is TRUE then expr will be calculated at each it
 \item{position_const}{numeric vector, what position for each instrument should be at entry to position}
 
 \item{price}{numeric vector, what prices should be used for change position}
+
+\item{reopen}{logical, whether rule can be reopened on the same bar}
 }
 \description{
 Add rule to strategy

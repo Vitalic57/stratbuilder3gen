@@ -198,7 +198,8 @@ addRule <- function(this,
                     position,
                     position_const,
                     price,
-                    on_success){
+                    on_success,
+                    reopen){
   UseMethod("addRule", this)
 }
 
@@ -359,7 +360,7 @@ getBacktestResults <- function(this, ...){
 
 
 #' @export
-installParams <- function(this, param.combo){
+installParams <- function(this, param.combo, ...){
   UseMethod("installParams", this)
 }
 

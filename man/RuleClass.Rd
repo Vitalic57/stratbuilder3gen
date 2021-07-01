@@ -12,6 +12,7 @@ Rule(
   position_const = NULL,
   price = NULL,
   on_success = NULL,
+  reopen = FALSE,
   ...
 )
 }
@@ -30,6 +31,8 @@ vector will be used, if pathwise is TRUE then expr will be calculated at each it
 \item{position_const}{numeric vector, what position for each instrument should be at entry to position}
 
 \item{price}{numeric vector, what prices should be used for change position}
+
+\item{reopen}{logical, whether rule can be reopened on the same bar}
 
 \item{...}{args passed to Signal}
 }

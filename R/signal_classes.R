@@ -68,6 +68,7 @@ Indicator <- function(lookforward=Inf,
 #' @param position numeric vector, what position for each instrument should be at each iteration when model in position
 #' @param position_const numeric vector, what position for each instrument should be at entry to position
 #' @param price numeric vector, what prices should be used for change position
+#' @param reopen logical, whether rule can be reopened on the same bar
 #' @param ... args passed to Signal
 #'
 #' @export
@@ -79,6 +80,7 @@ Rule <- function(type='enter',
                  position_const = NULL,
                  price= NULL,
                  on_success=NULL,
+                 reopen=FALSE,
                  ...){
   if(!type %in% c('enter','exit')){
     stop('wrong type! It must be enter or exit')
@@ -118,6 +120,7 @@ Rule <- function(type='enter',
     pathwise <- pathwise
     block <- block
     type <- type
+    reopen <- reopen
   })
   class(signal) <- c('Rule', class(signal))
   return(signal)

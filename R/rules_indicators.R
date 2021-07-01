@@ -36,12 +36,12 @@ addIndicators.Strategy <- function(this,
     i <- i + 1
   }
   args <- rlang::enexprs(expr=expr,
-                         name=name,
                          lookback =lookback,
                          args = args,
                          lookforward=lookforward,
                          # history=history,
                          vars=vars)
+  args[['name']] <- name
   this$indicators[[name]] <- do.call('Indicator', args = args)
   return(invisible(this))
 }
@@ -67,7 +67,8 @@ addRule.Strategy <- function(this,
                              position = NULL,
                              position_const = NULL,
                              price = NULL,
-                             on_success = NULL
+                             on_success = NULL,
+                             reopen = FALSE
 ){
   nms <- sapply(this$rules, '[[', 'name')
   i <- 0
@@ -84,7 +85,6 @@ addRule.Strategy <- function(this,
     i <- i + 1
   }
   args <- rlang::enexprs(expr = expr,
-                          name = name,
                           lookback = lookback,
                           args = args,
                           type = type,
@@ -93,7 +93,9 @@ addRule.Strategy <- function(this,
                           position = position,
                           position_const = position_const,
                           price = price,
-                          on_success = on_success)
+                          on_success = on_success,
+                          reopen = reopen)
+  args[['name']] <- name
   this$rules[[name]] <- do.call('Rule', args = args)
   return(invisible(this))
 }
@@ -137,6 +139,7 @@ addRuleConstraint.Strategy <- function(this,
                           args = args,
                           rules = rules,
                           rule_type = rule_type)
+  args[['name']] <- name
   this$rule_contraints[[name]] <- do.call("RuleConstraint", args = args)
   return(invisible(this))
 }

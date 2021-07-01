@@ -4,12 +4,14 @@
 \alias{installParams.Strategy}
 \title{Install parameters to model}
 \usage{
-\method{installParams}{Strategy}(this, param.combo)
+\method{installParams}{Strategy}(this, param.combo = NULL, ...)
 }
 \arguments{
 \item{this}{model}
 
 \item{param.combo}{data.frame/list/vector - parameters}
+
+\item{...}{params}
 }
 \description{
 Install parameters to model

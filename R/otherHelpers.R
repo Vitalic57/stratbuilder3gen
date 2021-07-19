@@ -32,18 +32,19 @@ Lag.matrix <- function(x, k = 1){
 }
 
 lag_fun <- function(x, k = 1){
-  if(k > length(x)){
+  n <- length(x)
+  if(k > n){
     stop("k > nrow(x)")
   }else if (k != as.integer(k)){
     stop("k must be a non-negative integer")
   }else if (k < 0){
     m.na <- rep(NA, abs(k))
-    ret <- c(tail(x, k), m.na)
+    ret <- c(x[(n - k + 1):n], m.na)
   }else if (k == 0) {
     return(x)
   }else{
     m.na <- rep(NA, k)
-    ret <- c(m.na, head(x,-k))
+    ret <- c(m.na, x[1:(n - k + 1)])
   }
   return(ret)
 }

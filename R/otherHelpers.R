@@ -39,12 +39,12 @@ lag_fun <- function(x, k = 1){
     stop("k must be a non-negative integer")
   }else if (k < 0){
     m.na <- rep(NA, abs(k))
-    ret <- c(x[(n - k + 1):n], m.na)
+    ret <- c(x[(abs(k) + 1):n], m.na)
   }else if (k == 0) {
     return(x)
   }else{
     m.na <- rep(NA, k)
-    ret <- c(m.na, x[1:(n - k + 1)])
+    ret <- c(m.na, x[1:(n - k)])
   }
   return(ret)
 }

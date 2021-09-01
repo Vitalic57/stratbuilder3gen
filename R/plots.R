@@ -353,7 +353,7 @@ plotCalendar.xts <- function(this, ...){
 #' Plot Capital of strategy
 #'
 #'
-#' @param this modelStrategy
+#' @param this Strategy
 #' @param ... params
 #' @export
 #' @rdname plotCapital
@@ -367,7 +367,7 @@ plotCapital <- function(this,
 #'
 #' @param ... params for plotCapital
 #' @export
-#' @rdname getCapital
+#' @rdname plotCapital
 getCapital <- function(...){
   args <- list(...)
   args[['return_type']] <- 'data'
@@ -420,10 +420,10 @@ plotCapital.Strategy <- function(this,
     x <- calcStat(this, acceptable_stats$money_in_pos_, range_start, range_end)
     x[x == 0] <- NA
   }else if(leg == 'sep'){
-    x <- e$results$money_in_pos_leg
+    x <- abs(e$results$money_in_pos_leg)
     x[x == 0] <- NA
   }else if(is.numeric(leg)){
-    x <- e$results$money_in_pos_leg[,legs]
+    x <- abs(e$results$money_in_pos_leg[,legs])
     x[x == 0] <- NA
   }
 
@@ -458,6 +458,117 @@ plotCapital.Strategy <- function(this,
   }
 
 }
+
+
+#' Plot Net position of strategy
+#'
+#'
+#' @param this Strategy
+#' @param ... params
+#' @export
+#' @rdname plotNetPosition
+plotNetPosition <- function(this,
+                        ...){
+  UseMethod('plotNetPosition', this)
+}
+
+
+#' Get Capital of strategy
+#'
+#' @param ... params for plotNetPosition
+#' @export
+#' @rdname plotNetPosition
+getNetPosition <- function(...){
+  args <- list(...)
+  args[['return_type']] <- 'data'
+  x <- do.call('plotNetPosition', args = args)
+  x[is.na(x)] <- 0
+  return(x)
+}
+
+
+
+#' @param start_date Date / character, example: start_date='2008-01-01'
+#'
+#' @param leg numeric / character, numeric is responsible for capital by legs, character can be "all" then capital will be summed or it can be "sep" then
+#' capital will be plotted for each leg
+#' @param end_date Date / character, example: end_date='2018-01-01'
+#' @param return_type character, enter 'plot' for graphical representation or 'data' for xts series.
+#' @param graph_type character, ggplot2 or plotly
+#'
+#' @export
+#' @rdname plotNetPosition
+#' @method plotNetPosition Strategy
+plotNetPosition.Strategy <- function(this,
+                                 start_date = NULL,
+                                 end_date = NULL,
+                                 leg = 'all',
+                                 return_type = 'plot',
+                                 graph_type = 'ggplot2',
+                                 ...){
+  e <- this$backtest
+  dates <- getDateByIndex(this)
+  if (!is.null(start_date)){
+    range_start <- max(e$activeField['start'],  sum(dates < start_date) + 1)
+  }
+  else{
+    range_start <- e$activeField['start']
+  }
+  if(!is.null(end_date)){
+    range_end <- min(e$activeField['end'], sum(dates < end_date))
+  }
+  else{
+    range_end <- e$activeField['end']
+  }
+  if(range_start > range_end){
+    stop("start > end")
+  }
+  range <- range_start:range_end
+  legs <- leg
+  leg <- legs[1]
+  if(leg == 'all'){
+    x <- calcStat(this, acceptable_stats$net_pos_, range_start, range_end)
+    x[x == 0] <- NA
+  }else if(leg == 'sep'){
+    x <- e$results$money_in_pos_leg
+    x[x == 0] <- NA
+  }else if(is.numeric(leg)){
+    x <- e$results$money_in_pos_leg[,legs]
+    x[x == 0] <- NA
+  }
+
+  df <- cbind(
+    data.frame(date=dates),
+    data.frame(Money = x)
+  )[range,]
+  if(leg == 'sep'){
+    colnames(df) <- c('date', getData(this)$colnames)
+  }else if(is.numeric(leg)){
+    colnames(df) <- c('date', getData(this)$colnames[legs])
+  }
+  if(return_type == 'plot'){
+    newdf <- reshape2::melt(df, 'date')
+    if(graph_type == 'plotly'){
+      return(plotly::plot_ly(newdf, x = ~date, y = ~value,
+                             mode ='lines', type = 'scatter', color = ~variable, colors='Set1', line = list(width = 1.5)) %>%
+               plotly::layout(title = list(text="Net position", x=0.1)))
+    }else{
+      p <- ggplot2::ggplot(newdf, ggplot2::aes_string(x="date", y="value", color = "variable") ) +
+        ggplot2::geom_line() + ggplot2::theme_bw() + ggplot2::ggtitle("Net position")
+      if(leg != 'sep'){
+        p <- p + ggplot2::scale_color_manual(
+          values = c(
+            Money = 'red'
+          )) + ggplot2::theme(legend.position="none")
+      }
+      return(p)
+    }
+  }else if(return_type == 'data'){
+    return(xts(df[,-1], df$date))
+  }
+
+}
+
 
 
 #' Draws 5-D graph with axis x,y,size,color,symbol, which are contained in data.frame

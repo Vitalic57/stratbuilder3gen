@@ -44,7 +44,7 @@ lag_fun <- function(x, k = 1){
     return(x)
   }else{
     m.na <- rep(NA, k)
-    ret <- c(m.na, x[1:(n - k)])
+    ret <- c(m.na, `length<-`(x, n - k))
   }
   return(ret)
 }

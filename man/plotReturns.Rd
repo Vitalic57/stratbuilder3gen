@@ -7,7 +7,7 @@
 \method{plotReturns}{Strategy}(this, type = "MAE")
 }
 \arguments{
-\item{this}{modelStrategy}
+\item{this}{Strategy}
 
 \item{type}{character, MAE or MFE}
 

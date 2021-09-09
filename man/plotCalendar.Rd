@@ -10,7 +10,7 @@
 \method{plotCalendar}{xts}(this, ...)
 }
 \arguments{
-\item{this}{modelStrategy}
+\item{this}{Strategy}
 
 \item{compounded}{logical, compounded returns to use or not}
 

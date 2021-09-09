@@ -17,7 +17,7 @@
 getTradingLog: data.frame
 }
 \description{
-Return data.frame containing columns: 
+Return data.frame containing columns:
 Date - position change date
 Rule_name - name rule
 Instrument - traiding instrument

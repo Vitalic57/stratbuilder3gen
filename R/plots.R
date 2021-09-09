@@ -223,7 +223,7 @@ plotDrawdowns.Strategy <- function(this,
 
 #' Plot returns vs MAE/MFE
 #'
-#' @param this modelStrategy
+#' @param this Strategy
 #' @param type character, MAE or MFE
 #' @param from character, name of backtest
 #'
@@ -272,7 +272,7 @@ plotReturns.Strategy <- function(this, type = 'MAE'){
 
 #' Plot pnl in month-year matrix
 #'
-#' @param this modelStrategy
+#' @param this Strategy
 #' @param from character, name of backtest
 #' @param compounded logical, compounded returns to use or not
 #' @param ... params

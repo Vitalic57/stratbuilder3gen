@@ -284,7 +284,7 @@ plotPnL <- function(this,
 }
 
 #' @export
-getPnL <- function(this){
+getPnL <- function(this, ...){
   UseMethod("getPnL", this)
 }
 

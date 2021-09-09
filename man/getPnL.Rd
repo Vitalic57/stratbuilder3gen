@@ -12,7 +12,7 @@
 \item{...}{params}
 }
 \value{
-getPnL.modelStrategy: xts series
+getPnL.Strategy: xts series
 }
 \description{
 This method should be called only after backtest is done

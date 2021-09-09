@@ -5,7 +5,7 @@
 #' @param this Strategy
 #' @param ... params
 #'
-#' @return getPnL.modelStrategy: xts series
+#' @return getPnL.Strategy: xts series
 #' @export
 #' @rdname getPnL
 #' @method getPnL Strategy
@@ -14,8 +14,8 @@ getPnL.Strategy <- function(this,  ...){
 }
 
 #' Get all transactions
-#' 
-#' Return data.frame containing columns: 
+#'
+#' Return data.frame containing columns:
 #' Date - position change date
 #' Rule_name - name rule
 #' Instrument - traiding instrument
@@ -23,8 +23,8 @@ getPnL.Strategy <- function(this,  ...){
 #' @param this Strategy
 #' @param start numeric / Date / character, start of the period
 #' @param end numeric / Date / character, end of the period
-#' 
-#' @return getTradingLog: data.frame 
+#'
+#' @return getTradingLog: data.frame
 #' @export
 #' @rdname getTradingLog
 #' @method getTradingLog Strategy

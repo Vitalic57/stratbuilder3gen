@@ -1,5 +1,4 @@
 #' @import datastorage3pub
-#' @importFrom quantmod Lag
 NULL
 
 
@@ -7,3 +6,6 @@ NULL
   options('tibble.width'= Inf)
 }
 
+.onUnload <- function (libpath) {
+  library.dynam.unload("stratbuilder3gen", libpath)
+}

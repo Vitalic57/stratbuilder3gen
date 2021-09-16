@@ -11,21 +11,13 @@ Lag.matrix <- function(x, k = 1){
   }else if(k < 0){
     m.na <- matrix(NA, nrow = abs(k), ncol = ncol(x))
     n <- nrow(x)
-    if(ncol(x) == 1){
-      ret <- rbind(cbind(x[min(abs(k) + 1, n):n,]), m.na)
-    }else{
-      ret <- rbind(rbind(x[min(abs(k) + 1, n):n,]), m.na)
-    }
+    ret <- rbind(x[min(abs(k) + 1, n):n,,drop=FALSE], m.na)
   }else if (k == 0) {
     return(x)
   }else{
     m.na <- matrix(NA, nrow = k, ncol = ncol(x))
     n <- nrow(x)
-    if(ncol(x) == 1){
-      ret <- rbind(m.na, cbind(x[1:max(1, n - k),]))
-    }else{
-      ret <- rbind(m.na, rbind(x[1:max(1, n - k),]))
-    }
+    ret <- rbind(m.na, x[1:max(1, n - k),,drop=FALSE])
   }
   rownames(ret) <- NULL
   return(ret)
@@ -36,7 +28,7 @@ lag_fun <- function(x, k = 1){
   if(k > n){
     stop("k > nrow(x)")
   }else if (k != as.integer(k)){
-    stop("k must be a non-negative integer")
+    stop("k must be an integer")
   }else if (k < 0){
     m.na <- rep(NA, abs(k))
     ret <- c(x[(abs(k) + 1):n], m.na)
@@ -54,30 +46,149 @@ lag_fun <- function(x, k = 1){
 #'
 #' @export
 #' @rdname Lag
-Lag.character <- function(x, k = 1){
-  lag_fun(x, k)
+Lag.default <- function(x, k = 1){
+  lag_cpp(x, k)
 }
 
+#' Works as function lag, but remains NA in the beginnig.
+#'
 #' @param x object
-#' @param k numeric, integer lag
+#' @param ... params
 #'
 #' @export
 #' @rdname Lag
-Lag.numeric <- function(x, k = 1){
-  lag_fun(x, k)
+Lag <- function(x, ...){
+  UseMethod('Lag', x)
 }
 
+tail_cpp <- function(x, n=5L){
+  if(!is.null(dim(x))){
+    xlen <- dim(x)[1]
+  }else{
+    xlen <- length(x)
+  }
+  n <- if (n < 0L)
+    max(xlen + n, 0L)
+  else min(n, xlen)
+  subsequence(x, xlen - n + 1, xlen)
+}
+
+head_cpp <- function(x, n=5L){
+  if(!is.null(dim(x))){
+    xlen <- dim(x)[1]
+  }else{
+    xlen <- length(x)
+  }
+  n <- if (n < 0L)
+    max(xlen + n, 0L)
+  else min(n, xlen)
+  subsequence(x, 1, n)
+}
+
+#' Works as function tail, erase rownames, works faster
+#'
 #' @param x object
-#' @param k numeric, integer lag
+#' @param n int
 #'
 #' @export
-#' @rdname Lag
-Lag.logical <- function(x, k = 1){
-  lag_fun(x, k)
+#' @rdname Tail
+Tail <- function(x, n){
+  UseMethod('Tail', x)
+}
+
+#' @param n int
+#'
+#' @export
+#' @rdname Tail
+Tail.default <- function(x, n = 5L){
+  tail(x, n)
+}
+
+#' @param n int
+#'
+#' @export
+#' @rdname Tail
+Tail.numeric <- function(x, n = 5L){
+  tail_cpp(x, n)
+}
+
+#' @param n int
+#'
+#' @export
+#' @rdname Tail
+Tail.logical <- function(x, n = 5L){
+  tail_cpp(x, n)
+}
+
+#' @param n int
+#'
+#' @export
+#' @rdname Tail
+Tail.character <- function(x, n = 5L){
+  tail_cpp(x, n)
+}
+
+#' @param n int
+#'
+#' @export
+#' @rdname Tail
+Tail.matrix <- function(x, n = 5L){
+  tail_cpp(x, n)
+}
+
+#' Works as function head, erase rownames, works faster
+#'
+#' @param x object
+#' @param n int
+#'
+#' @export
+#' @rdname Head
+Head <- function(x, n){
+  UseMethod('Head', x)
+}
+
+#' @param n int
+#'
+#' @export
+#' @rdname Head
+Head.default <- function(x, n = 5L){
+  head(x, n)
+}
+
+#' @param n int
+#'
+#' @export
+#' @rdname Head
+Head.numeric <- function(x, n = 5L){
+  head_cpp(x, n)
+}
+
+#' @param n int
+#'
+#' @export
+#' @rdname Head
+Head.logical <- function(x, n = 5L){
+  head_cpp(x, n)
+}
+
+#' @param n int
+#'
+#' @export
+#' @rdname Head
+Head.character <- function(x, n = 5L){
+  head_cpp(x, n)
+}
+
+#' @param n int
+#'
+#' @export
+#' @rdname Head
+Head.matrix <- function(x, n = 5L){
+  head_cpp(x, n)
 }
 
 
-#' Work as function diff, but remains NA in the beginnig.
+#' Works as function diff, but remains NA in the beginnig.
 #'
 #' @param x object
 #' @param ... params

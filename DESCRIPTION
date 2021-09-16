@@ -32,10 +32,11 @@ Imports:
     plotly,
     rlang,
     pryr,
-    Rcpp
+    Rcpp (>= 1.0.3)
 Suggests:
 	testthat,
         knitr
 Remotes: Vitalic57/datastorage3pub
+LinkingTo: Rcpp
 VignetteBuilder: knitr
 RoxygenNote: 7.1.1

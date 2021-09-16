@@ -4,7 +4,7 @@
 \alias{Diff}
 \alias{Diff.default}
 \alias{Diff.matrix}
-\title{Work as function diff, but remains NA in the beginnig.}
+\title{Works as function diff, but remains NA in the beginnig.}
 \usage{
 Diff(x, ...)
 
@@ -20,5 +20,5 @@ Diff(x, ...)
 \item{k}{numeric, integer lag}
 }
 \description{
-Work as function diff, but remains NA in the beginnig.
+Works as function diff, but remains NA in the beginnig.
 }

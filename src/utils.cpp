@@ -2,30 +2,22 @@
 using namespace Rcpp;
 
 
-template <int RTYPE, typename T>
-Vector<RTYPE> lag_cpp_impl(Vector<RTYPE> x, int n, T na) {
+template <int RTYPE>
+Vector<RTYPE> lag_cpp_impl(Vector<RTYPE> x, int n) {
   int N = x.size();
-  if(abs(n) > N) n = N;
-  if(n > 0){
-    for(int i = 1; i <= (N-n); ++i){
-      x[N-i] = x[N-i-n];
-    }
-    for(int i = 0; i <n; i++){
-      x[i] = na;
-    }
-  }else if(n < 0){
-    for(int i =0; i<(N+n); i++){
-      x[i] = x[i - n];
-    }
-    for(int i = (N+n); i<N; i++){
-      x[i] = na;
-    }
+  if (n >= N || n <= -N) {
+    std::fill(x.begin(), x.end(), traits::get_na<RTYPE>());
+  } else if (n > 0) {
+    std::move(x.begin(), x.end() - n, x.begin() + n);
+    std::fill(x.begin(), x.begin() + n, traits::get_na<RTYPE>());
+  } else if (n < 0) {
+    std::move(x.begin() - n, x.end(), x.begin());
+    std::fill(x.end() + n, x.end(), traits::get_na<RTYPE>());
   }
   return x;
 }
 
-#include <Rcpp.h>
-using namespace Rcpp;
+
 
 template <int RTYPE>
 Vector<RTYPE> subsequence_vec_impl(const Vector<RTYPE>& x,
@@ -85,14 +77,14 @@ SEXP subsequence( SEXP x, int start, int end){
 
 }
 
+
 // [[Rcpp::export]]
-SEXP lag_cpp( SEXP x, int n = 1 ){
-  switch(TYPEOF(x)){
-  case INTSXP: return lag_cpp_impl<INTSXP, int>(x, n, NA_INTEGER);
-  case LGLSXP: return lag_cpp_impl<LGLSXP, bool>(x, n, NA_LOGICAL);
-  case STRSXP: return lag_cpp_impl<STRSXP, String>(x, n, NA_STRING);
-  case REALSXP: return lag_cpp_impl<REALSXP, double>(x, n, NA_REAL);
-  default: stop("wrong type");
+SEXP lag_cpp(SEXP x, int n = 1) {
+  switch (TYPEOF(x)) {
+  case INTSXP: return lag_cpp_impl<INTSXP>(x, n);
+  case LGLSXP: return lag_cpp_impl<LGLSXP>(x, n);
+  case STRSXP: return lag_cpp_impl<STRSXP>(x, n);
+  case REALSXP: return lag_cpp_impl<REALSXP>(x, n);
+  default: stop("type not implemented");
   }
 }
-

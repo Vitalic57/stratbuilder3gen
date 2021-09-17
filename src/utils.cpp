@@ -5,16 +5,17 @@ using namespace Rcpp;
 template <int RTYPE>
 Vector<RTYPE> lag_cpp_impl(Vector<RTYPE> x, int n) {
   int N = x.size();
+  Vector<RTYPE> y(N);
   if (n >= N || n <= -N) {
-    std::fill(x.begin(), x.end(), traits::get_na<RTYPE>());
+    std::fill(y.begin(), y.end(), traits::get_na<RTYPE>());
   } else if (n > 0) {
-    std::move(x.begin(), x.end() - n, x.begin() + n);
-    std::fill(x.begin(), x.begin() + n, traits::get_na<RTYPE>());
+    std::move(x.begin(), x.end() - n, y.begin() + n);
+    std::fill(y.begin(), y.begin() + n, traits::get_na<RTYPE>());
   } else if (n < 0) {
-    std::move(x.begin() - n, x.end(), x.begin());
-    std::fill(x.end() + n, x.end(), traits::get_na<RTYPE>());
+    std::move(x.begin() - n, x.end(), y.begin());
+    std::fill(y.end() + n, y.end(), traits::get_na<RTYPE>());
   }
-  return x;
+  return y;
 }
 
 

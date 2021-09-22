@@ -18,7 +18,7 @@ addIndicators.Strategy <- function(this,
                                    lookback = NULL,
                                    args = list(),
                                    lookforward=Inf,
-                                   tomatrix=TRUE,
+                                   #tomatrix=TRUE,
                                    vars=NULL
                                    ){
   nms <- sapply(this$indicators, '[[', 'name')
@@ -39,7 +39,7 @@ addIndicators.Strategy <- function(this,
                          lookback =lookback,
                          args = args,
                          lookforward=lookforward,
-                         tomatrix=tomatrix,
+                         #tomatrix=tomatrix,
                          vars=vars)
   args[['name']] <- name
   this$indicators[[name]] <- do.call('Indicator', args = args)

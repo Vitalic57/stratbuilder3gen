@@ -35,19 +35,18 @@ Signal <- function(expr,
 #' @param lookforward numeric / expression. If it is numeric then after that number of points all indicators will be recalculated.
 #' If it is expression then it should return logical. It will indicate recalculate indicators or not.
 #' @param vars character vector, which names should be exported from expr
-#' @param tomatrix logical, whether to try to transfer object from expr to matrix with cbind or not
 #' @param ... args passed to Signal
 #'
 #' @export
 #' @rdname IndicatorClass
 Indicator <- function(lookforward=Inf,
-                      tomatrix=TRUE,
+                      #tomatrix=TRUE,
                       vars=NULL,
                       ...){
   signal <- Signal(...)
   with(signal,{
     lookforward <- rlang::enexpr(lookforward)
-    tomatrix <- tomatrix
+    #tomatrix <- tomatrix
     updated <- TRUE
     vars <- vars
   })

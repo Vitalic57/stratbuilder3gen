@@ -17,7 +17,6 @@ addIndicator(this, expr, name, lookback, args, lookforward, vars)
   lookback = NULL,
   args = list(),
   lookforward = Inf,
-  tomatrix = TRUE,
   vars = NULL
 )
 }
@@ -36,8 +35,6 @@ addIndicator(this, expr, name, lookback, args, lookforward, vars)
 If it is expression then it should return logical. It will indicate recalculate indicators or not.}
 
 \item{vars}{character vector, which names should be exported from expr}
-
-\item{tomatrix}{logical, whether to try to transfer object from expr to matrix with cbind or not}
 }
 \description{
 Define variable via expr and name it via name. It will be recalculated each lookforward steps.

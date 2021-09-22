@@ -73,14 +73,20 @@ addToReport <- function(this, ...){
 }
 
 #' @export
-#' @rdname setParams
+#' @rdname Params
 setParams <- function(this, ...){
   UseMethod("setParams", this)
 }
 
+#' @export
+#' @rdname Params
+changeParams <- function(this, ...){
+  UseMethod("changeParams", this)
+}
+
 
 #' @export
-#' @rdname getParams
+#' @rdname Params
 getParams <- function(this, type){
   UseMethod("getParams", this)
 }

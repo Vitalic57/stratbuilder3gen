@@ -43,7 +43,7 @@ params_switcher <- function(x){
 #'        args = list(n = 5, a = 2)
 #' )
 #' }
-#' @rdname setParams
+#' @rdname Params
 #' @method setParams Strategy
 setParams.Strategy <- function(this,
                                args=list(),
@@ -55,17 +55,54 @@ setParams.Strategy <- function(this,
 }
 
 
+#' Override or add parameters
+#'
+#' Here you can define parameters for rules, indicators, program part and managers of position
+#'
+#' @param type character, it can be equal to rules, indicators, pp, pm, com, pymodel, all
+#' @param args list, define your params here
+#' @param this Strategy
+#' @param ... args
+#'
+#' @export
+#' @examples
+#' \dontrun{
+#' setParams(this,
+#'        type = 'rules',
+#'        args = list(n = 5, a = 2)
+#' )
+#' }
+#' @rdname Params
+#' @method changeParams Strategy
+changeParams.Strategy <- function(this,
+                               args=list(),
+                               type = 'all',
+                               ...){
+  type <- params_switcher(type)
+  params <- c(args, list(...))
+  for(name in names(params)){
+    this$params[[type]][[name]] <- params[[name]]
+  }
+  return(invisible(this))
+}
+
+
+
 #' Get list of parameters according to type.
 #'
 #' @param type character, it can be equal to rules, indicators, pp or pm
 #' @param this Strategy
 #'
 #' @export
-#' @rdname getParams
+#' @rdname Params
 #' @method getParams Strategy
 getParams.Strategy <- function(this, type){
-  type <- params_switcher(type)
-  return(c(this$params[['all']], this$params[[type]]))
+  if(!missing(type) || tolower(type) == 'all'){
+    this$params[['all']]
+  }else{
+    type <- params_switcher(type)
+    return(c(this$params[['all']], this$params[[type]]))
+  }
 }
 
 

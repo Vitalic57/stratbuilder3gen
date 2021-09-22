@@ -2,26 +2,46 @@
 % Please edit documentation in R/genericStrategy.R, R/parameters.R
 \name{setParams}
 \alias{setParams}
+\alias{changeParams}
+\alias{getParams}
 \alias{setParams.Strategy}
+\alias{changeParams.Strategy}
+\alias{getParams.Strategy}
 \title{Set list of parameters}
 \usage{
 setParams(this, ...)
 
+changeParams(this, ...)
+
+getParams(this, type)
+
 \method{setParams}{Strategy}(this, args = list(), type = "all", ...)
+
+\method{changeParams}{Strategy}(this, args = list(), type = "all", ...)
+
+\method{getParams}{Strategy}(this, type)
 }
 \arguments{
 \item{this}{Strategy}
 
 \item{...}{args}
 
-\item{args}{list, define your params here}
+\item{type}{character, it can be equal to rules, indicators, pp or pm}
 
-\item{type}{character, it can be equal to rules, indicators, pp, pm, com, pymodel, all}
+\item{args}{list, define your params here}
 }
 \description{
 Here you can define parameters for rules, indicators, program part and managers of position
+
+Here you can define parameters for rules, indicators, program part and managers of position
 }
 \examples{
+\dontrun{
+setParams(this,
+       type = 'rules',
+       args = list(n = 5, a = 2)
+)
+}
 \dontrun{
 setParams(this,
        type = 'rules',

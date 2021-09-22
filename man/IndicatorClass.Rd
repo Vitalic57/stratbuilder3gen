@@ -4,11 +4,13 @@
 \alias{Indicator}
 \title{Indicator constructor}
 \usage{
-Indicator(lookforward = Inf, vars = NULL, ...)
+Indicator(lookforward = Inf, tomatrix = TRUE, vars = NULL, ...)
 }
 \arguments{
 \item{lookforward}{numeric / expression. If it is numeric then after that number of points all indicators will be recalculated.
 If it is expression then it should return logical. It will indicate recalculate indicators or not.}
+
+\item{tomatrix}{logical, whether to try to transfer object from expr to matrix with cbind or not}
 
 \item{vars}{character vector, which names should be exported from expr}
 

@@ -86,7 +86,7 @@ setMoney.Strategy <- function(this, x){
 #' @rdname getMoney
 #' @method getMoney Strategy
 getMoney.Strategy <- function(this){
-  return(this$money)
+  return(this[['money']])
 }
 
 #' @export

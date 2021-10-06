@@ -10,8 +10,8 @@
   name,
   lookback = 0,
   args = list(),
-  rules = NULL,
-  rule_type = NULL
+  rules,
+  rule_type
 )
 }
 \arguments{

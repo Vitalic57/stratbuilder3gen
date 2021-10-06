@@ -116,8 +116,8 @@ addRuleConstraint.Strategy <- function(this,
                                        name,
                                        lookback = 0,
                                        args = list(),
-                                       rules=NULL,
-                                       rule_type=NULL
+                                       rules,
+                                       rule_type
 ){
   nms <- sapply(this$rule_contraints, '[[', 'name')
   i <- 0

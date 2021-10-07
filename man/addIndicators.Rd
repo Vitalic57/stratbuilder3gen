@@ -16,7 +16,7 @@ addIndicator(this, expr, name, lookback, args, lookforward, vars)
   name,
   lookback = NULL,
   args = list(),
-  lookforward = Inf,
+  lookforward = NULL,
   vars = NULL
 )
 }

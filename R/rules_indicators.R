@@ -17,7 +17,7 @@ addIndicators.Strategy <- function(this,
                                    name,
                                    lookback = NULL,
                                    args = list(),
-                                   lookforward=Inf,
+                                   lookforward=NULL,
                                    #tomatrix=TRUE,
                                    vars=NULL
                                    ){

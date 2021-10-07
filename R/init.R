@@ -123,6 +123,13 @@ dates <- NULL
 #' @export
 pos_change <- NULL
 
+#' Indicator of corporative event
+#' 
+#' This variable should be used in indicator's lookforward. If used then indicator will be recalculated as soon as corporative event occured.
+#' 
+#' @export
+corp_event <- NULL
+
 .onLoad <- function(libname, pkgname){
   options('tibble.width'= Inf)
 }

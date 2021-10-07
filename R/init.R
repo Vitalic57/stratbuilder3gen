@@ -20,7 +20,7 @@ money_last <- NULL
 range <- NULL
 
 #' @export
-data <- NULL
+data <- Data()
 
 #' @export
 this <- NULL

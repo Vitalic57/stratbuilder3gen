@@ -69,9 +69,9 @@ calcStat_.Strategy <- function(this, s, start, end){
     })
   })
   if(s$general){
-    this$backtest$results[[s$name]] <- value
+    this$backtest$results[s$name] <- list(value)
   }else{
-    this$backtest$stats[[period]][[s$name]] <- value
+    this$backtest$stats[[period]][s$name] <- list(value)
   }
   return(value)
 }

@@ -3,7 +3,7 @@
 \docType{data}
 \name{corp_event}
 \alias{corp_event}
-\title{Indicator of corporative event}
+\title{Indicator of corporate event}
 \format{
 An object of class \code{NULL} of length 0.
 }

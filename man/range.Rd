@@ -16,18 +16,18 @@ Indexes for passing into main tables as adjusted, close, high, low, splits and d
 Often used in indicator's expr.
 }
 \details{
-Because vector operations in R is working much faster than iterating through cycle we prefer using them for calculating indicators and rules. 
-Some indicators may depend on others and others can be for example constants that recalculated every p iteration. 
+Because vector operations in R is working much faster than iterating through cycle we prefer using them for calculating indicators and rules.
+Some indicators may depend on others and others can be for example constants that recalculated every p iteration.
 For instance, indicator named N, calculated somehow, that returns integer more than 0 and recalculated every 100 iterations. Next indicator named ma,
 calculated as SMA(closing prices, N). There multiple ways to calculate it:
-1. We can on each iteration pass last N close prices and get scalar ma, then use it in pathwise=TRUE rules. 
-The first drawback there will be 100 calls to SMA and backtest will be slow. 
+1. We can on each iteration pass last N close prices and get scalar ma, then use it in pathwise=TRUE rules.
+The first drawback there will be 100 calls to SMA and backtest will be slow.
 The second drawback that we tied to use pathwise=TRUE rules, so expr will be calculated on each iteration, that decrease speed of backtest too.
-1. We can pass all the closing prices to SMA. But we only need this indicator for the next 100 points and then N will change, so value of SMA should change. 
-1. And the last only pass to indicator last N - 1 points, current point and next 100. So we don't waste resources and calculate only what wa need. 
+1. We can pass all the closing prices to SMA. But we only need this indicator for the next 100 points and then N will change, so value of SMA should change.
+1. And the last only pass to indicator last N - 1 points, current point and next 100. So we don't waste resources and calculate only what wa need.
 
- range is responsible for giving indexes for the last case. So formula will be \code{SMA(data$adjusted[range,], N)}. 
- If indicator calculated so, we get vector sized as length(range). If one want to get current value of ma, one should use ii scalar index. 
+ range is responsible for giving indexes for the last case. So formula will be \code{SMA(data$adjusted[range,], N)}.
+ If indicator calculated so, we get vector sized as length(range). If one want to get current value of ma, one should use ii scalar index.
  It works as current period for indicators that calculated on range indexes.
 }
 \keyword{datasets}

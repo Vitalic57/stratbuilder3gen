@@ -12,8 +12,14 @@ unrealized_money_last
 }
 \description{
 Numeric vector.
-It is equal to profit or loss for each asset in the model at the moment inside backtester cycle.
-Often used in rule's expr block for takeprofit or stoploss rules. 
-So if one want to get full pnl, one should use \code{sum(unrealized_money_last)}.
+It is equal to profit or loss for each asset in their currencies in the model at the moment inside backtester cycle.
+Often used in rule's expr block for takeprofit or stoploss rules.
+}
+\details{
+If one want to get full unrealized pnl in main currency of model,
+one should use \code{unreal_sum}. If model has only one currence it is possible to use \code{sum(unrealized_money_last)}.
+}
+\seealso{
+\code{\link{unreal_sum}}
 }
 \keyword{datasets}

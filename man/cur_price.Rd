@@ -11,9 +11,9 @@ An object of class \code{NULL} of length 0.
 cur_price
 }
 \description{
-Numeric vector. 
-It is equivalent to \code{data[[data$price_table]][i, ]}. 
-So it is equal to close price on given moment inside backtester cycle. 
+Numeric vector.
+It is equivalent to \code{data[[data$price_table]][i, ]}.
+So it is equal to close price on given moment inside backtester cycle.
 Often used in rule's position/position_const block.
 }
 \keyword{datasets}

@@ -88,7 +88,7 @@ Rule <- function(type='enter',
   position <- rlang::enexpr(position)
   position_const <- rlang::enexpr(position_const)
   if(type =='enter' && is.null(position) && is.null(position_const) ){
-    position_const <- quote(floor(getMoney(this) / data$mat[[data$price_table]][i,] / ncol(data$mat[[data$price_table]])))
+    position_const <- quote(floor(money_init / cur_price / data[['ncol']]))
   }
   dots <- rlang::enexprs(...)
   dots[['name']] <- gsub('\\.','_', dots[['name']])

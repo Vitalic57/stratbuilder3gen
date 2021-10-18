@@ -474,3 +474,13 @@ printTradeTime <- function(this, type){
 calcVecSignals <- function(this, env, ...){
   UseMethod("calcVecSignals", this)
 }
+
+#' @export
+timer <- function(this, ...){
+  UseMethod("timer", this)
+}
+
+#' @export
+getLookback <- function(this, env=parent.frame()){
+  UseMethod("getLookback", this)
+}

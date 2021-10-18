@@ -14,6 +14,7 @@
 \alias{getRuleConstraints.Strategy}
 \alias{getRule.Strategy}
 \alias{getSignals.Strategy}
+\alias{calcVecSignals.Strategy}
 \title{Gets inforamtion about indicators in the model}
 \usage{
 addRuleConstraint(this, expr, name, lookback, args, rules, rule_type)
@@ -41,6 +42,8 @@ removeIndicator(this, name)
 \method{getRule}{Strategy}(this, name)
 
 \method{getSignals}{Strategy}(this)
+
+\method{calcVecSignals}{Strategy}(this, env = NULL, ...)
 }
 \arguments{
 \item{this}{Strategy}
@@ -48,6 +51,10 @@ removeIndicator(this, name)
 \item{name}{character}
 
 \item{pathwise}{logical, if true then return only pathwise=TRUE rules}
+
+\item{env}{environment, result environment, if NULL then new environment will be created}
+
+\item{...}{variables}
 }
 \value{
 list of inforamation
@@ -59,6 +66,8 @@ list of information
 list of information
 
 list of information
+
+environment
 }
 \description{
 Gets inforamtion about indicators in the model
@@ -70,4 +79,6 @@ Gets rule constraints
 Get information about one rule in the strategy
 
 Get indicators and rules
+
+Calculate vector rules and indicators
 }

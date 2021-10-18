@@ -18,7 +18,6 @@ addIndicators.Strategy <- function(this,
                                    lookback = NULL,
                                    args = list(),
                                    lookforward=NULL,
-                                   #tomatrix=TRUE,
                                    vars=NULL
                                    ){
   nms <- sapply(this$indicators, '[[', 'name')
@@ -39,7 +38,6 @@ addIndicators.Strategy <- function(this,
                          lookback =lookback,
                          args = args,
                          lookforward=lookforward,
-                         #tomatrix=tomatrix,
                          vars=vars)
   args[['name']] <- name
   this$indicators[[name]] <- do.call('Indicator', args = args)
@@ -169,7 +167,7 @@ getIndicators.Strategy <- function(this){
 #' @export
 getRules.Strategy <- function(this, pathwise){
   if(missing(pathwise)){
-    return(this$rules)
+    return(this[['rules']])
   }else{
     l <- lapply(this$rules, function(rule) if(rule[['pathwise']] == pathwise) rule else NULL)
     l[sapply(l, is.null)] <- NULL
@@ -187,7 +185,7 @@ getRules.Strategy <- function(this, pathwise){
 #' @method getRuleConstraints Strategy
 #' @export
 getRuleConstraints.Strategy <- function(this){
-  return(this$rule_contraints)
+  return(this[['rule_contraints']])
 }
 
 
@@ -201,8 +199,8 @@ getRuleConstraints.Strategy <- function(this){
 #' @method getRule Strategy
 #' @export
 getRule.Strategy <- function(this, name){
-  if(name %in% names(this$rules)){
-    return(this$rules[[name]])
+  if(name %in% names(this[['rules']])){
+    return(this[['rules']][[name]])
   }
 }
 
@@ -219,3 +217,75 @@ getRule.Strategy <- function(this, name){
 getSignals.Strategy <- function(this){
   c(getRules(this), getIndicators(this), getRuleConstraints(this))
 }
+
+
+#' Calculate vector rules and indicators
+#'
+#' @param this Strategy
+#' @param env environment, result environment, if NULL then new environment will be created
+#' @param ... variables
+#'
+#' @return environment
+#' @rdname Signal
+#' @method calcVecSignals Strategy
+#' @export 
+calcVecSignals.Strategy <- function(this, env=NULL, ...){
+  if(is.null(env)){
+    res <- new.env()
+    parent.env(res) <- parent.frame()
+  }else{
+    res <- env
+  }
+  res$data <- this$data
+  dots <- list(...)
+  for(x in names(dots)){
+    res[[x]] <- dots[[x]]
+  }
+  if(!'range' %in% names(dots)){
+    res[['range']] <- 1:res[['data']][['nrow']]
+  }
+  
+  signals <- c(getIndicators(this), getRules(this, pathwise = FALSE))
+  for(x in signals){
+    x[['env']] <- new.env()
+    parent.env(x[['env']]) <- res
+    if(!is.null(x[['vars']])){
+      # lazy evaluation
+      if(is.null(x[['qexpr']])){
+        x[['qexpr']] <- pryr::substitute_q(call('within', list(), x[['expr']]), env = c(getParams(this, 'indicators'), x[['args']]))
+      }
+      rlang::env_bind_lazy(x[['env']],
+                    !!x[['name']] := !!x[['qexpr']],
+                    .eval_env = x[['env']]
+      )
+      for(var in x[['vars']]){
+          rlang::env_bind_lazy(res,
+                        !!var := (!!x[['env']])[[!!x[['name']]]][[!!var]],
+                        .eval_env = res
+          )
+      }
+    }else{
+      # lazy evaluation
+      if(is.null(x[['qexpr']])){
+        if(class(x)[1] == 'Indicator'){
+          x[['qexpr']] <- pryr::substitute_q(x[['expr']], env = c(getParams(this, 'indicators'), x[['args']]))
+        }else{
+          x[['qexpr']] <- pryr::substitute_q(x[['expr']], env = c(getParams(this, 'rules'), x[['args']]))
+        }
+      }
+      rlang::env_bind_lazy(x[['env']],
+                    !!x[['name']] := !!x[['qexpr']],
+                    .eval_env = x[['env']]
+      )
+      rlang::env_bind_lazy(res,
+                    !!x$name := (!!x[['env']])[[!!x[['name']]]],
+                    .eval_env = res
+      )
+    }
+  } 
+  return(invisible(res))
+}
+
+
+
+

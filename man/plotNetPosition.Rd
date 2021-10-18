@@ -12,8 +12,8 @@ getNetPosition(...)
 
 \method{plotNetPosition}{Strategy}(
   this,
-  start_date = NULL,
-  end_date = NULL,
+  start,
+  end,
   leg = "all",
   return_type = "plot",
   graph_type = "ggplot2",
@@ -25,9 +25,9 @@ getNetPosition(...)
 
 \item{...}{params for plotNetPosition}
 
-\item{start_date}{Date / character, example: start_date='2008-01-01'}
+\item{start}{Numeric scalar / Date / character, example: start_date='2008-01-01'}
 
-\item{end_date}{Date / character, example: end_date='2018-01-01'}
+\item{end}{Numeric scalar / Date / character, example: end_date='2018-01-01'}
 
 \item{leg}{numeric / character, numeric is responsible for capital by legs, character can be "all" then capital will be summed or it can be "sep" then
 capital will be plotted for each leg}

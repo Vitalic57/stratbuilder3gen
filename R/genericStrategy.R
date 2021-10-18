@@ -295,7 +295,7 @@ getPnL <- function(this, ...){
 }
 
 #' @export
-getTradingLog <- function(this){
+getTradingLog <- function(this, start, end){
   UseMethod("getTradingLog", this)
 }
 

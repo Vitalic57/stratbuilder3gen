@@ -4,10 +4,21 @@
 \alias{plotDrawdowns.Strategy}
 \title{Plot drawdowns}
 \usage{
-\method{plotDrawdowns}{Strategy}(this, return_type = "plot", graph_type = "ggplot2", ...)
+\method{plotDrawdowns}{Strategy}(
+  this,
+  start,
+  end,
+  return_type = "plot",
+  graph_type = "ggplot2",
+  ...
+)
 }
 \arguments{
 \item{this}{Strategy}
+
+\item{start}{Numeric scalar / Date}
+
+\item{end}{Numeric scalar / Date}
 
 \item{return_type}{character, plot or data}
 

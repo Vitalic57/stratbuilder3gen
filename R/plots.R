@@ -173,6 +173,8 @@ plotPnL.Strategy <- function(this,
 #'
 #' @param this Strategy
 #' @param from character, name of backtest
+#' @param start Numeric scalar / Date
+#' @param end Numeric scalar / Date
 #' @param return_type character, plot or data
 #' @param graph_type character, ggplot2 / xts / plotly
 #' @param ... params
@@ -182,13 +184,17 @@ plotPnL.Strategy <- function(this,
 #' @rdname plotDrawdowns
 #' @method plotDrawdowns Strategy
 plotDrawdowns.Strategy <- function(this,
+                                   start,
+                                   end,
                                    return_type = 'plot',
                                    graph_type = 'ggplot2',
                                    ...){
   e <- this$backtest
   dates <- getDateByIndex(this)
-  range_start <- e$activeField['start']
-  range_end <- e$activeField['end']
+  range_start <- get_backtest_start_index(this, start)
+  range_end <- get_backtest_end_index(this, end)
+  # range_start <- e$activeField['start']
+  # range_end <- e$activeField['end']
   if(range_start > range_end){
     stop("start > end")
   }
@@ -378,11 +384,11 @@ getCapital <- function(...){
 
 
 
-#' @param start_date Date / character, example: start_date='2008-01-01'
+#' @param start Numeric scalar / Date / character, example: start_date='2008-01-01'
 #'
 #' @param leg numeric / character, numeric is responsible for capital by legs, character can be "all" then capital will be summed or it can be "sep" then
 #' capital will be plotted for each leg
-#' @param end_date Date / character, example: end_date='2018-01-01'
+#' @param end Numeric scalar / Date / character, example: end_date='2018-01-01'
 #' @param return_type character, enter 'plot' for graphical representation or 'data' for xts series.
 #' @param graph_type character, ggplot2 or plotly
 #'
@@ -390,26 +396,28 @@ getCapital <- function(...){
 #' @rdname plotCapital
 #' @method plotCapital Strategy
 plotCapital.Strategy <- function(this,
-                                 start_date = NULL,
-                                 end_date = NULL,
+                                 start,
+                                 end,
                                  leg = 'all',
                                  return_type = 'plot',
                                  graph_type = 'ggplot2',
                                  ...){
   e <- this$backtest
   dates <- getDateByIndex(this)
-  if (!is.null(start_date)){
-    range_start <- max(e$activeField['start'],  sum(dates < start_date) + 1)
-  }
-  else{
-    range_start <- e$activeField['start']
-  }
-  if(!is.null(end_date)){
-    range_end <- min(e$activeField['end'], sum(dates < end_date))
-  }
-  else{
-    range_end <- e$activeField['end']
-  }
+  range_start <- get_backtest_start_index(this, start)
+  range_end <- get_backtest_end_index(this, end)
+  # if (!is.null(start_date)){
+  #   range_start <- max(e$activeField['start'],  sum(dates < start_date) + 1)
+  # }
+  # else{
+  #   range_start <- e$activeField['start']
+  # }
+  # if(!is.null(end_date)){
+  #   range_end <- min(e$activeField['end'], sum(dates < end_date))
+  # }
+  # else{
+  #   range_end <- e$activeField['end']
+  # }
   if(range_start > range_end){
     stop("start > end")
   }
@@ -488,11 +496,11 @@ getNetPosition <- function(...){
 
 
 
-#' @param start_date Date / character, example: start_date='2008-01-01'
+#' @param start Numeric scalar / Date / character, example: start_date='2008-01-01'
 #'
 #' @param leg numeric / character, numeric is responsible for capital by legs, character can be "all" then capital will be summed or it can be "sep" then
 #' capital will be plotted for each leg
-#' @param end_date Date / character, example: end_date='2018-01-01'
+#' @param end Numeric scalar / Date / character, example: end_date='2018-01-01'
 #' @param return_type character, enter 'plot' for graphical representation or 'data' for xts series.
 #' @param graph_type character, ggplot2 or plotly
 #'
@@ -500,26 +508,28 @@ getNetPosition <- function(...){
 #' @rdname plotNetPosition
 #' @method plotNetPosition Strategy
 plotNetPosition.Strategy <- function(this,
-                                 start_date = NULL,
-                                 end_date = NULL,
+                                 start,
+                                 end,
                                  leg = 'all',
                                  return_type = 'plot',
                                  graph_type = 'ggplot2',
                                  ...){
   e <- this$backtest
   dates <- getDateByIndex(this)
-  if (!is.null(start_date)){
-    range_start <- max(e$activeField['start'],  sum(dates < start_date) + 1)
-  }
-  else{
-    range_start <- e$activeField['start']
-  }
-  if(!is.null(end_date)){
-    range_end <- min(e$activeField['end'], sum(dates < end_date))
-  }
-  else{
-    range_end <- e$activeField['end']
-  }
+  range_start <- get_backtest_start_index(this, start)
+  range_end <- get_backtest_end_index(this, end)
+  # if (!is.null(start_date)){
+  #   range_start <- max(e$activeField['start'],  sum(dates < start_date) + 1)
+  # }
+  # else{
+  #   range_start <- e$activeField['start']
+  # }
+  # if(!is.null(end_date)){
+  #   range_end <- min(e$activeField['end'], sum(dates < end_date))
+  # }
+  # else{
+  #   range_end <- e$activeField['end']
+  # }
   if(range_start > range_end){
     stop("start > end")
   }

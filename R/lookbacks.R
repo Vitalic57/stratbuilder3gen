@@ -97,6 +97,7 @@ getLookback.Strategy <- function(this, env = parent.frame()){
   return(findLongestPath(adj))
 }
 
+#' @export
 getNodesInfo <- function(this){
   objects <- getSignals(this)
   nodes <- list()

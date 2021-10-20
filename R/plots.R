@@ -362,22 +362,22 @@ plotCalendar.xts <- function(this, ...){
 #' @param this Strategy
 #' @param ... params
 #' @export
-#' @rdname plotCapital
-plotCapital <- function(this,
+#' @rdname plotPosition
+plotPosition <- function(this,
                         ...){
-  UseMethod('plotCapital', this)
+  UseMethod('plotPosition', this)
 }
 
 
-#' Get Capital of strategy
+#' Get amount of money in position
 #'
-#' @param ... params for plotCapital
+#' @param ... params for plotPosition
 #' @export
-#' @rdname plotCapital
-getCapital <- function(...){
+#' @rdname plotPosition
+getPosition <- function(...){
   args <- list(...)
   args[['return_type']] <- 'data'
-  x <- do.call('plotCapital', args = args)
+  x <- do.call('plotPosition', args = args)
   x[is.na(x)] <- 0
   return(x)
 }
@@ -393,9 +393,9 @@ getCapital <- function(...){
 #' @param graph_type character, ggplot2 or plotly
 #'
 #' @export
-#' @rdname plotCapital
-#' @method plotCapital Strategy
-plotCapital.Strategy <- function(this,
+#' @rdname plotPosition
+#' @method plotPosition Strategy
+plotPosition.Strategy <- function(this,
                                  start,
                                  end,
                                  leg = 'all',
@@ -406,18 +406,6 @@ plotCapital.Strategy <- function(this,
   dates <- getDateByIndex(this)
   range_start <- get_backtest_start_index(this, start)
   range_end <- get_backtest_end_index(this, end)
-  # if (!is.null(start_date)){
-  #   range_start <- max(e$activeField['start'],  sum(dates < start_date) + 1)
-  # }
-  # else{
-  #   range_start <- e$activeField['start']
-  # }
-  # if(!is.null(end_date)){
-  #   range_end <- min(e$activeField['end'], sum(dates < end_date))
-  # }
-  # else{
-  #   range_end <- e$activeField['end']
-  # }
   if(range_start > range_end){
     stop("start > end")
   }
@@ -518,18 +506,6 @@ plotNetPosition.Strategy <- function(this,
   dates <- getDateByIndex(this)
   range_start <- get_backtest_start_index(this, start)
   range_end <- get_backtest_end_index(this, end)
-  # if (!is.null(start_date)){
-  #   range_start <- max(e$activeField['start'],  sum(dates < start_date) + 1)
-  # }
-  # else{
-  #   range_start <- e$activeField['start']
-  # }
-  # if(!is.null(end_date)){
-  #   range_end <- min(e$activeField['end'], sum(dates < end_date))
-  # }
-  # else{
-  #   range_end <- e$activeField['end']
-  # }
   if(range_start > range_end){
     stop("start > end")
   }

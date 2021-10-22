@@ -6,9 +6,8 @@
 calcBacktestResults.Strategy <- function(this){
   res_list <- this$paramset[['results']]
   this$paramset[['report']] <- lapply(res_list, function(x){
-    tibble::as_tibble(c(list(index = rownames(x$param.combo)), as.list(x$param.combo),  x$report))
-  }) %>%
-    Reduce('rbind', .)
+    tibble::as_tibble(c(list(index = rownames(x[['param.combo']])), as.list(x[['param.combo']]),  x[['report']]))
+  }) %>% {do.call(dplyr::bind_rows, .)}
 }
 
 
@@ -22,8 +21,8 @@ calcBacktestResults.Strategy <- function(this){
 #' @method getBacktestResults Strategy
 #' @export
 getBacktestResults.Strategy <- function(this, recalc=TRUE){
-  if(is.null(this$paramset[['report']]) || recalc){
+  if(is.null(this[['paramset']][['report']]) || recalc){
     calcBacktestResults(this)
   }
-  return(this$paramset[['report']])
+  return(this[['paramset']][['report']])
 }

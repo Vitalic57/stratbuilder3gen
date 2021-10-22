@@ -68,7 +68,7 @@ plotPnL.Strategy <- function(this,
    range_start <- get_backtest_start_index(this, start)
    range_end <- get_backtest_end_index(this, end)
    if(range_start > range_end){
-     stop("start > end")
+     return(NULL)
    }
    range <- range_start:range_end
    init_money <- getMoney(this)  #e$results$money[range_start,]

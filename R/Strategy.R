@@ -185,6 +185,7 @@ setData.Strategy <- function(this, x, clearBacktest = TRUE, only=FALSE, ...){
 #' @method expandLookback Strategy
 expandLookback.Strategy <- function(this, x){
   this$expand_lookback <- x
+  return(invisible(this))
 }
 
 

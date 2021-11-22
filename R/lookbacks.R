@@ -66,11 +66,24 @@ findLongestPath <- function(adj){
 #'
 #' @param this Strategy
 #' @param env environment
+#' @param ... variables
 #'
 #' @return numeric
 #' @method getLookback Strategy
 #' @export
-getLookback.Strategy <- function(this, env = parent.frame()){
+getLookback.Strategy <- function(this, env=NULL, ...){
+  if(is.null(env)){
+    res <- new.env()
+    parent.env(res) <- parent.frame()
+  }else{
+    res <- env
+  }
+  dots <- list(...)
+  for(x in names(dots)){
+    res[[x]] <- dots[[x]]
+  }
+  env <- res
+  
   signal_nodes <- getNodesInfo(this)
   this_nodes <- list('!this' = getLookbacks(this))
   nodes <- c(signal_nodes, this_nodes)

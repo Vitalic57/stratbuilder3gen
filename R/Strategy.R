@@ -11,6 +11,7 @@ Strategy <- function(){
     report_stats <- list()
     money <- 10^7
     created <- Sys.Date()
+    expand_lookback <- FALSE
     version <- list(major = packageVersion('stratbuilder3gen')$major,
                     minor = packageVersion('stratbuilder3gen')$minor)
     # call for getting list of evaluated rules
@@ -171,6 +172,19 @@ setData.Strategy <- function(this, x, clearBacktest = TRUE, only=FALSE, ...){
     e$paramset$report <- NULL
   }
   return(invisible(this))
+}
+
+
+#' Expand lookback to the whole available data
+#'
+#' @param this Strategy
+#' @param x logical
+#'
+#' @export
+#' @rdname expandLookback
+#' @method expandLookback Strategy
+expandLookback.Strategy <- function(this, x){
+  this$expand_lookback <- x
 }
 
 

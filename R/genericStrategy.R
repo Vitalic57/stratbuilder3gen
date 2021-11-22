@@ -481,6 +481,11 @@ timer <- function(this, ...){
 }
 
 #' @export
-getLookback <- function(this, env=parent.frame()){
+expandLookback <- function(this, x){
+  UseMethod("expandLookback", this)
+}
+
+#' @export
+getLookback <- function(this, env, ...){
   UseMethod("getLookback", this)
 }

@@ -4,12 +4,14 @@
 \alias{getLookback.Strategy}
 \title{Get lookback}
 \usage{
-\method{getLookback}{Strategy}(this, env = parent.frame())
+\method{getLookback}{Strategy}(this, env = NULL, ...)
 }
 \arguments{
 \item{this}{Strategy}
 
 \item{env}{environment}
+
+\item{...}{variables}
 }
 \value{
 numeric

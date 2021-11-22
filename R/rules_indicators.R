@@ -241,9 +241,9 @@ calcVecSignals.Strategy <- function(this, env=NULL, ...){
   for(x in names(dots)){
     res[[x]] <- dots[[x]]
   }
-  if(!'range' %in% names(dots)){
-    res[['range']] <- 1:res[['data']][['nrow']]
-  }
+  # if(!'range' %in% names(dots)){
+  #   res[['range']] <- 1:res[['data']][['nrow']]
+  # }
   
   signals <- c(getIndicators(this), getRules(this, pathwise = FALSE))
   for(x in signals){

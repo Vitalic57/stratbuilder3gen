@@ -315,8 +315,15 @@ plotParamset <- function(this, ...){
 }
 
 #' @export
-plotReturns <- function(this, ...){
-  UseMethod("plotReturns", this)
+#' @rdname plotTrades
+plotReturns <- function(this, type){
+  UseMethod("plotTrades", this)
+}
+
+#' @export
+#' @rdname plotTrades
+plotTrades <- function(this, type){
+  UseMethod("plotTrades", this)
 }
 
 
@@ -360,8 +367,13 @@ applyParamset <- function(this, ...){
 }
 
 #' @export
-getBacktestResults <- function(this, ...){
+getBacktestResults <- function(this, recalc){
   UseMethod("getBacktestResults", this)
+}
+
+#' @export
+getBacktestPnL <- function(this, ind){
+  UseMethod("getBacktestPnL", this)
 }
 
 

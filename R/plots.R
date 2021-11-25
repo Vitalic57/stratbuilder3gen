@@ -227,17 +227,19 @@ plotDrawdowns.Strategy <- function(this,
   }
 }
 
-#' Plot returns vs MAE/MFE
+#' Plot trade PnL vs MAE/MFE in trade
+#' 
+#' Red triangles is losing trades, green triangles is winning trades. Grey dashed line is y = x line.
+#' On y-axis MAE/MFE is displayed, on x-axis PnL of trade is displayed.
 #'
 #' @param this Strategy
 #' @param type character, MAE or MFE
-#' @param from character, name of backtest
 #'
 #' @return ggplot
 #' @export
-#' @rdname plotReturns
-#' @method plotReturns Strategy
-plotReturns.Strategy <- function(this, type = 'MAE'){
+#' @rdname plotTrades
+#' @method plotTrades Strategy
+plotTrades.Strategy <- function(this, type = 'MAE'){
   e <- this$backtest
   report <- getTrades(this) %>%
     dplyr::mutate(ind = 1:dplyr::n())

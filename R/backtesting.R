@@ -26,3 +26,26 @@ getBacktestResults.Strategy <- function(this, recalc=TRUE){
   }
   return(this[['paramset']][['report']])
 }
+
+
+#' Returns aggregated PnL from applyParamset backtests
+#' 
+#' This function would work only if applyParamset was called with save.pnls = TRUE
+#'
+#' @param this Strategy
+#' @param ind numeric, one or multiple indexes of backtest from applyParamset
+#'
+#' @return xts
+#' @rdname getBacktestPnL
+#' @method getBacktestPnL Strategy
+#' @export
+getBacktestPnL.Strategy <- function(this, ind = NULL){
+  if(is.null(ind)){
+    do.call(cbind, lapply(this[['paramset']][['results']], '[[', 'pnl')) %>% 
+      set_colnames(names(this[['paramset']][['results']]))
+  }else{
+    ind <- as.character(ind)
+    do.call(cbind, lapply(this[['paramset']][['results']][ind], '[[', 'pnl')) %>% 
+      set_colnames(ind)
+  }
+}

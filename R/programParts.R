@@ -7,29 +7,27 @@
 #'
 #' i. full name / short name -- description.
 #'
-#' 1. init -- in initialization period before main cycle
+#' 1. init -- at initialization period before main cycle
 #'
 #' 2. after_tables / tables -- after initialization of rules tables
 #'
-#' 3. after_coefs / coefs -- after initialization of coeffitients
+#' 3. after_coefs / coefs -- after initialization of coefficients
 #'
-#' 4. each_iter / iter -- in the beginnig of each iteration, before execution of rules
+#' 4. each_iter / iter -- at the beginning of each iteration, before execution of rules
 #'
-#' 5. after_enter_to_pos / enter -- Right after entering in position
+#' 5. after_enter_to_pos / enter -- Right after entering to position
 #'
 #' 6. after_indicators / inds -- after initialization of indicators
 #'
-#' 7. unrealized_money_last / unreal -- unrealized_money_last variable should be defined as unrealized pnl for each leg
+#' 7. before_enter_to_pos / bexit -- before enter to position
 #'
-#' 8. before_enter_to_pos / bexit -- before enter to position
+#' 8. before_exit_from_pos / bexit -- before exit from position
 #'
-#' 9. before_exit_from_pos / bexit -- before exit from position
+#' 9. after_exit_from_pos / exit -- after exit from position
 #'
-#' 10. after_exit_from_pos / exit -- after exit from position
+#' 10. data -- initialization of tables, derivative datasets and libraries
 #'
-#' 11. data -- initalization of tables and derivative datasets
-#'
-#' 12. start_cycle / on_start -- at the start of cycle before any update of spread
+#' 11. start_cycle / on_start -- at the start of cycle pass
 #'
 #' @example
 #' \dontrun{

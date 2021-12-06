@@ -665,7 +665,7 @@ plotParamset.data.frame <- function(df, x = NULL, y = NULL, size = NULL,
 #' @method plotParamset Strategy
 plotParamset.Strategy <- function(this, x = NULL, y = NULL, size = NULL,
                                   color = NULL, symbol = NULL, size_scale = 20){
-  cl <- rlang::call2('plotParamset.data.frame', df=quote(getBacktestResults(this)),
+  cl <- rlang::call2('plotParamset.data.frame', df=rlang::expr(getBacktestResults(!!this)),
                      !!!rlang::enexprs(x=x, y=y, size=size, color=color, symbol=symbol, size_scale=size_scale))
   eval(cl)
 }

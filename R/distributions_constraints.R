@@ -152,7 +152,7 @@ install.param.combo <- function (strategy, param.combo){
 #' @examples
 #' \dontrun{
 #' addIndicator(this, name = 'bb', expr = {
-#'    BBands(data$mat$close[range, 1], n = n , sd = nsd)
+#'    BBands(data$close[range, 1], n = n , sd = nsd)
 #'  }, args = list(n = 30, nsd = 1))
 #' addDistribution(this,
 #'     component.type = 'indicator',
@@ -214,11 +214,7 @@ addDistribution.Strategy <- function(this,
     return(invisible(this))
   }
   if(missing(label)){
-    # if(names(variable)[1] %in% names(this$paramset[['distributions']])){
-    #   label <- paste0('distribution', length(this$paramset[['distributions']]) + 1)
-    # }else{
     label <- make.names(names(variable)[1])
-    #}
   }else{
     label <- make.names(label)
   }
@@ -354,7 +350,7 @@ create_paramset <- function(){
 #' @examples
 #' \dontrun{
 #' addIndicators(this, vars = c('spread', 'bb'), expr = {
-#'    spread <- data$mat$close[range, ] %*% cbind(c(0.5, -0.5))
+#'    spread <- data$close[range, ] %*% cbind(c(0.5, -0.5))
 #'    bb <- BBands(spread, n = n , sd = nsd)
 #'  }, args = list(n = 30, nsd = 1))
 #' addDistribution(this,

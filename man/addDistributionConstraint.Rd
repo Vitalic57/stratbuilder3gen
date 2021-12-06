@@ -17,7 +17,7 @@ Add constraints to distributions
 \examples{
 \dontrun{
 addIndicators(this, vars = c('spread', 'bb'), expr = {
-   spread <- data$mat$close[range, ] \%*\% cbind(c(0.5, -0.5))
+   spread <- data$close[range, ] \%*\% cbind(c(0.5, -0.5))
    bb <- BBands(spread, n = n , sd = nsd)
  }, args = list(n = 30, nsd = 1))
 addDistribution(this,

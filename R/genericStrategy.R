@@ -349,8 +349,7 @@ addDistribution <- function(this,
 
 #' @export
 addDistributionConstraint <- function(this,
-                                       expr,
-                                       label
+                                      ...
 ){
   UseMethod("addDistributionConstraint", this)
 

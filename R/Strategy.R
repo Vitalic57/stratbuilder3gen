@@ -278,6 +278,18 @@ format.Strategy <- function(strategy){
     }
   }
   
+  # trade time
+  if(length(strategy$tradeTime) > 0){
+    for(tp in names(strategy$tradeTime)){
+      for(i in seq_along(strategy$tradeTime[[tp]])){
+        text <- paste0(text, "addTradeTime(",
+                       "type='", tp, "', '", 
+                       sec_to_tstr(strategy$tradeTime[[tp]][[i]][[1]]), "', '",
+                       sec_to_tstr(strategy$tradeTime[[tp]][[i]][[2]]), "')", nextline)
+      }
+    }
+  }
+  
   # constants
   {
     var_fun <- list(
@@ -310,6 +322,18 @@ format.Strategy <- function(strategy){
       }else{
         text <- paste0(text, "\t", name, " = ", 'Stats$', strategy$report_stats[[name]][['name']], ',\n')
       }
+    }
+    text <- paste0(substr(text, 1, nchar(text) - 2), ')', nextline)
+  }
+  
+  # distributions
+  {}
+  
+  # distribution constraints
+  if(length(strategy$paramset$constraints)){
+    text <- paste0(text, 'addDistributionConstraint(\n')
+    for(i in seq_along(strategy$paramset$constraints)){
+      text <- paste0(text, '\t', paste(deparse(strategy$paramset$constraints[[i]][['expr']]), collapse = '\n'), ",\n")
     }
     text <- paste0(substr(text, 1, nchar(text) - 2), ')', nextline)
   }

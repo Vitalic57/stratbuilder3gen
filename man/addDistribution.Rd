@@ -36,7 +36,7 @@ Add distribution
 \examples{
 \dontrun{
 addIndicator(this, name = 'bb', expr = {
-   BBands(data$mat$close[range, 1], n = n , sd = nsd)
+   BBands(data$close[range, 1], n = n , sd = nsd)
  }, args = list(n = 30, nsd = 1))
 addDistribution(this,
     component.type = 'indicator',

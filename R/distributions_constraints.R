@@ -47,9 +47,9 @@ install.param.combo <- function (strategy, param.combo){
     stop("'param.combo' must have a dim attribute")
   }
   paramset <- strategy$paramset
-  ind_names <- sapply(strategy$indicators, function(x) x$name)
-  rule_names <- sapply(strategy$rules, function(x) x$name)
-  rule_constraint_names <- sapply(strategy$rule_constraints, function(x) x$name)
+  ind_names <- vapply(strategy$indicators, '[[', 'name', FUN.VALUE = character(1))
+  rule_names <- vapply(strategy$rules, '[[', 'name', FUN.VALUE = character(1))
+  rule_constraint_names <- vapply(strategy$rule_constraints, '[[', 'name', FUN.VALUE = character(1))
   # pymodel_names <- strategy$pymodel$as
   for (param.label in colnames(param.combo)) {
     distribution <- paramset$distributions[[param.label]]
@@ -283,7 +283,7 @@ addDistribution.Strategy <- function(this,
                            })
   expr_var <- variable
   variable[[1]] <- eval(variable[[1]], env = parent.frame())
-  if(is.list(variable[[1]]) && any(sapply(variable[[1]], is.function))){
+  if(is.list(variable[[1]]) && any(vapply(variable[[1]], is.function, logical(1)))){
     ee <- new.env()
     q <- expr_var[[1]]
     if (is.symbol(q)) {

@@ -5,9 +5,9 @@
 \alias{calcStat.Strategy}
 \title{Calculate statistic}
 \usage{
-calcStat(this, s, start, end, recalc, ...)
+calcStat(this, s, start, end, recalc, args, ...)
 
-\method{calcStat}{Strategy}(this, s, start, end, recalc = FALSE, ...)
+\method{calcStat}{Strategy}(this, s, start, end, recalc = FALSE, args = list(), ...)
 }
 \arguments{
 \item{this}{Strategy}
@@ -19,6 +19,8 @@ calcStat(this, s, start, end, recalc, ...)
 \item{end}{numeric, end of the period}
 
 \item{recalc}{logical, whether stat will be recalculated with all dependent or evaluated on the basis of precalculated stats}
+
+\item{args}{list, list of arguments for function / Stat s}
 
 \item{...}{params to Stat if s is a function}
 }

@@ -122,6 +122,9 @@ getNodesInfo <- function(this){
       lookback <- list()
     }
     vars <- all.vars(object[['expr']]) 
+    if(is.Rule(object)){
+      vars <- c(vars, all.vars(object[['position']]), all.vars(object[['position_const']]), all.vars(object[['price']]))
+    }
     vars_list <- lapply(vars, function(var){
       if(var == object[['name']] || var %in% object[['vars']]){
         0

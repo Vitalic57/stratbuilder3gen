@@ -1,11 +1,14 @@
 #' @export
 #' @method calcStat Strategy
 #' @rdname calcStat
-calcStat.Strategy <- function(this, s, start, end, recalc=FALSE, ...){
+calcStat.Strategy <- function(this, s, start, end, recalc=FALSE, args=list(), ...){
   if(is.function(s)){
     ss <- Stat(func = s, ...)
   }else{
     ss <- s
+  }
+  if(length(args) > 0){
+    recalc <- TRUE
   }
   start <- get_backtest_start_index(this, start)
   end <- get_backtest_end_index(this, end)
@@ -13,28 +16,28 @@ calcStat.Strategy <- function(this, s, start, end, recalc=FALSE, ...){
     return(NULL)
   }
   period <- paste('per', start, end, sep = '_')
-  if(is.null(this$backtest$stats)){
-    this$backtest$stats <- list()
+  if(is.null(this[['backtest']][['stats']])){
+    this[['backtest']][['stats']] <- list()
   }
-  if(is.null(this$backtest$stats[[period]])){
-    this$backtest$stats[[period]] <- list()
+  if(is.null(this[['backtest']][['stats']][[period]])){
+    this[['backtest']][['stats']][[period]] <- list()
   }
   if(!recalc){
-    if(!ss$general && ss$name %in% names(this$backtest$stats[[period]])){
-      return(this$backtest$stats[[period]][[ss$name]])
-    }else if(ss$general && ss$name %in% names(this$backtest$results)){
-      return(this$backtest$results[[ss$name]])
+    if(!ss[['general']] && ss[['name']] %in% names(this[['backtest']][['stats']][[period]])){
+      return(this[['backtest']][['stats']][[period]][[ss$name]])
+    }else if(ss[['general']] && ss[['name']] %in% names(this[['backtest']][['results']])){
+      return(this[['backtest']][['results']][[ss[['name']]]])
     }
-  }else{
+  }else if(length(args) == 0){
     eraseStat(this, ss, start, end)
   }
   precalcStat(this, ss, start, end, recalc)
-  if(!ss$general && ss$name %in% names(this$backtest$stats[[period]])){
-    return(this$backtest$stats[[period]][[ss$name]])
-  }else if(ss$general && ss$name %in% names(this$backtest$results)){
-    return(this$backtest$results[[ss$name]])
+  if(!ss[['general']] && ss[['name']] %in% names(this[['backtest']][['stats']][[period]])){
+    return(this[['backtest']][['stats']][[period]][[ss[['name']]]])
+  }else if(ss[['general']] && ss[['name']] %in% names(this[['backtest']][['results']])){
+    return(this[['backtest']][['results']][[ss[['name']]]])
   }
-  calcStat_(this, ss, start, end)
+  calcStat_(this, ss, start, end, args)
 }
 
 
@@ -43,38 +46,44 @@ calcStat.Strategy <- function(this, s, start, end, recalc=FALSE, ...){
 #' @method calcStat_ Strategy
 #' @rdname calcStat_
 #' @export
-calcStat_.Strategy <- function(this, s, start, end){
+calcStat_.Strategy <- function(this, s, start, end, args=list()){
   period <- paste('per', start, end, sep = '_')
   if(!is.null(s[['depends']])){
-    nms <- sapply(this$report_stats, "[[", 'name')
+    nms <- vapply(this[['report_stats']], "[[", 'name', FUN.VALUE = character(1))
     for(x in s[['depends']]){
       ind <- which(nms == x)
       if(length(ind) == 0){
         s1 <- acceptable_stats[[x]]
       }else{
-        s1 <- this$report_stats[[ind]]
+        s1 <- this[['report_stats']][[ind]]
       }
       if(is.null(s1)){
         stop(paste('No such stat', x))
       }
-      if(!s1$general && is.null(this$backtest$stats[[period]][[x]])){
+      if(!s1[['general']] && is.null(this[['backtest']][['stats']][[period]][[x]])){
         calcStat_(this, s1, start, end)
-      }else if(s1$general && is.null(this$backtest$results[[x]])){
+      }else if(s1[['general']] && is.null(this[['backtest']][['results']][[x]])){
         calcStat_(this, s1, start, end)
       }
     }
   }
-  data <- this$data
-  value <- with(this$backtest$results, {
-    with(this$backtest$stats[[period]],{
-      environment(s$func) <- environment()
-      s$func(this, start, end)
+  data <- this[['data']]
+  value <- with(this[['backtest']][['results']], {
+    with(this[['backtest']][['stats']][[period]],{
+      environment(s[['func']]) <- environment()
+      if(length(args) == 0){
+        s[['func']](this, start, end)
+      }else{
+        do.call(s[['func']], args=c(list(this, start, end), args))
+      }
     })
   })
-  if(s$general){
-    this$backtest$results[s$name] <- list(value)
-  }else{
-    this$backtest$stats[[period]][s$name] <- list(value)
+  if(length(args) == 0){
+    if(s[['general']]){
+      this[['backtest']][['results']][s[['name']]] <- list(value)
+    }else{
+      this[['backtest']][['stats']][[period]][s[['name']]] <- list(value)
+    }
   }
   return(value)
 }
@@ -87,18 +96,18 @@ eraseStat.Strategy <- function(this, s, start, end){
   period <- paste('per', start, end, sep = '_')
   if(!is.null(s[['depends']])){
     for(x in s[['depends']]){
-      if(!is.null(this$backtest$stats[[period]][[x]])){
-        if(is.null(this$report_stats[[x]])){
+      if(!is.null(this[['backtest']][['stats']][[period]][[x]])){
+        if(is.null(this[['report_stats']][[x]])){
           s1 <- acceptable_stats[[x]]
         }else{
-          s1 <- this$report_stats[[x]]
+          s1 <- this[['report_stats']][[x]]
         }
         eraseStat(this, s1, start, end)
       }
     }
   }
-  if(!s$general){
-    this$backtest$stats[[period]][[s$name]] <- NULL
+  if(!s[['general']]){
+    this[['backtest']][['stats']][[period]][[s[['name']]]] <- NULL
   }
   return(invisible(NULL))
 }

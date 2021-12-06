@@ -40,13 +40,11 @@ Signal <- function(expr,
 #' @export
 #' @rdname IndicatorClass
 Indicator <- function(lookforward=Inf,
-                      #tomatrix=TRUE,
                       vars=NULL,
                       ...){
   signal <- Signal(...)
   with(signal,{
     lookforward <- rlang::enexpr(lookforward)
-    #tomatrix <- tomatrix
     updated <- TRUE
     vars <- vars
   })
@@ -158,3 +156,90 @@ RuleConstraint <- function(
   class(signal) <- c('RuleConstraint', class(signal))
   return(signal)
 }
+
+
+format_obj <- function(obj, def_obj, exclude_args, fun_name){
+  text <- paste0(fun_name, "(\n")
+  for(name in  sort(names(obj))){
+    if(name %in% exclude_args){
+      next
+    }
+    if(is.null(obj[[name]])){
+      next
+    }
+    if(length(def_obj[[name]]) == 0 && length(obj[[name]]) == 0){
+      next
+    }
+    tryCatch({
+      if(obj[[name]] == def_obj[[name]]){
+        next
+      }
+    }, error = function(e){})
+    text <- paste0(text,
+                   "\t",name,' = ',paste(deparse(obj[[name]]), collapse = '\n\t'), ",\n")
+  }
+  text <- paste0(substr(text, 1, nchar(text) - 2), '\n)')
+  return(text)
+}
+
+
+#' @export
+#' @method format Rule
+format.Rule <- function(rule){
+  format_obj(obj=rule,
+             def_obj=Rule(name='!default!'),
+             exclude_args=c('env', 'this'),
+             fun_name='addRule')
+}
+
+#' @export
+#' @method print Rule
+print.Rule <- function(rule){
+  cat(format(rule))
+}
+
+#' @export
+is.Rule <- function(rule){
+  inherits(rule, 'Rule')
+}
+
+#' @export
+#' @method format RuleConstraint
+format.RuleConstraint <- function(rulec){
+  format_obj(obj=rulec,
+             def_obj=RuleConstraint(name='!default!'),
+             exclude_args=c('env', 'this'),
+             fun_name='addRuleConstraint')
+}
+
+#' @export
+#' @method print RuleConstraint
+print.RuleConstraint <- function(rulec){
+  cat(format(rulec))
+}
+
+#' @export
+is.RuleConstraint <- function(rulec){
+  inherits(rulec, 'RuleConstraint')
+}
+
+#' @export
+#' @method format Indicator
+format.Indicator <- function(indicator){
+  format_obj(obj=indicator,
+             def_obj=Indicator(name='!default!'),
+             exclude_args=c('env', 'this'),
+             fun_name='addIndicator')
+}
+
+#' @export
+#' @method print Indicator
+print.Indicator <- function(indicator){
+  cat(format(indicator))
+}
+
+#' @export
+is.Indicator <- function(indicator){
+  inherits(indicator, 'Indicator')
+}
+

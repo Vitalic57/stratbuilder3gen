@@ -401,9 +401,10 @@ getSavedModels <- function(this){
 #' @param start numeric, start of the period
 #' @param end numeric, end of the period
 #' @param recalc logical, whether stat will be recalculated with all dependent or evaluated on the basis of precalculated stats
+#' @param args list, list of arguments for function / Stat s
 #' @param ... params to Stat if s is a function
 #' @export
-calcStat <- function(this, s, start, end, recalc, ...){
+calcStat <- function(this, s, start, end, recalc, args, ...){
   UseMethod("calcStat", this)
 }
 
@@ -428,8 +429,9 @@ eraseStat <- function(this, s, start, end){
 #' @param s Stat
 #' @param start numeric, start of the period
 #' @param end numeric, end of the period
+#' @param args list, list of arguments for function in s
 #' @export
-calcStat_ <- function(this, s, start, end){
+calcStat_ <- function(this, s, start, end, args){
   UseMethod("calcStat_", this)
 }
 

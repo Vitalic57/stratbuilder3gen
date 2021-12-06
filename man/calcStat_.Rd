@@ -5,9 +5,9 @@
 \alias{calcStat_.Strategy}
 \title{Calculate statistic}
 \usage{
-calcStat_(this, s, start, end)
+calcStat_(this, s, start, end, args)
 
-\method{calcStat_}{Strategy}(this, s, start, end)
+\method{calcStat_}{Strategy}(this, s, start, end, args = list())
 }
 \arguments{
 \item{this}{Strategy}
@@ -17,6 +17,8 @@ calcStat_(this, s, start, end)
 \item{start}{numeric, start of the period}
 
 \item{end}{numeric, end of the period}
+
+\item{args}{list, list of arguments for function in s}
 }
 \description{
 Statistic and all dependent statistics will be calculated

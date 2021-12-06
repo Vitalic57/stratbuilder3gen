@@ -52,11 +52,11 @@ addTradeTime.Strategy <- function(this, type, ...){
                   return()
                 })
   l <- list(...)
-  if(all(sapply(l, length) == 2)){
+  if(all(vapply(l, length, numeric(1)) == 2)){
     for(i in seq_len(length(l))){
       this$tradeTime[[ind]][[length(this$tradeTime[[ind]]) + 1]] <- lapply(l[[i]], tstr_to_sec)
     }
-  }else if(length(l) == 2 && all(sapply(l, length) == 1)){
+  }else if(length(l) == 2 && all(vapply(l, length, numeric(1)) == 1)){
     this$tradeTime[[ind]][[length(this$tradeTime[[ind]]) + 1]] <- lapply(c(l[[1]], l[[2]]), tstr_to_sec)
   }else if(length(l) == 1 && length(l[[1]]) == 1){
     this$tradeTime[[ind]][[length(this$tradeTime[[ind]]) + 1]] <- lapply(c(l[[1]], '23:59:59'), tstr_to_sec)

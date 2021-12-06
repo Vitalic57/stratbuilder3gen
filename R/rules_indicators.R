@@ -20,7 +20,7 @@ addIndicators.Strategy <- function(this,
                                    lookforward=NULL,
                                    vars=NULL
                                    ){
-  nms <- sapply(this$indicators, '[[', 'name')
+  nms <- vapply(this$indicators, '[[', 'name', FUN.VALUE = character(1))
   i <- 0
   while(TRUE){
     if(missing(name)){
@@ -68,7 +68,7 @@ addRule.Strategy <- function(this,
                              on_success = NULL,
                              reopen = FALSE
 ){
-  nms <- sapply(this$rules, '[[', 'name')
+  nms <- vapply(this$rules, '[[', 'name', FUN.VALUE = character(1))
   i <- 0
   while(TRUE){
     if(missing(name)){
@@ -117,7 +117,7 @@ addRuleConstraint.Strategy <- function(this,
                                        rules,
                                        rule_type
 ){
-  nms <- sapply(this$rule_contraints, '[[', 'name')
+  nms <- vapply(this$rule_contraints, '[[', 'name', FUN.VALUE = character(1))
   i <- 0
   while(TRUE){
     if(missing(name)){
@@ -170,7 +170,7 @@ getRules.Strategy <- function(this, pathwise){
     return(this[['rules']])
   }else{
     l <- lapply(this$rules, function(rule) if(rule[['pathwise']] == pathwise) rule else NULL)
-    l[sapply(l, is.null)] <- NULL
+    l[vapply(l, is.null, FUN.VALUE = logical(1))] <- NULL
     return(l)
   }
 }
@@ -215,7 +215,7 @@ getRule.Strategy <- function(this, name){
 #' @method getSignals Strategy
 #' @export
 getSignals.Strategy <- function(this){
-  c(getRules(this), getIndicators(this), getRuleConstraints(this))
+  c(getIndicators(this), getRules(this), getRuleConstraints(this))
 }
 
 

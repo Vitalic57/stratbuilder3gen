@@ -219,12 +219,12 @@ getDateByIndex.Strategy <- function(this, indexes = NULL){
 #' @method format Strategy
 format.Strategy <- function(strategy){
   def_strategy <- Strategy()
-  var_list <- list('variables' = 'addVariables', 
+  var_list <- list('variables' = 'addVariables',
                    'objects' = 'addObjects',
                    'stats_init' = 'addStats')
   nextline <- ' %>%\n'
   text <- paste0('Strategy()', nextline)
-  
+
   # params
   if(length(strategy$params) > 0){
     if(length(strategy$params$all) > 0){
@@ -244,12 +244,12 @@ format.Strategy <- function(strategy){
                      )
     }
   }
-  
+
   # signals
   for(sig in getSignals(strategy)){
     text <- paste0(text, format(sig), nextline)
   }
-  
+
   # var list
   {
     for(vr in names(var_list)){
@@ -262,7 +262,7 @@ format.Strategy <- function(strategy){
       }
     }
   }
-  
+
   # program parts
   if(length(strategy$pps) > 0){
     include_name <- length(strategy$pps) > 1
@@ -277,19 +277,19 @@ format.Strategy <- function(strategy){
       text <- paste0(substr(text, 1, nchar(text) - 2), ')', nextline)
     }
   }
-  
+
   # trade time
   if(length(strategy$tradeTime) > 0){
     for(tp in names(strategy$tradeTime)){
       for(i in seq_along(strategy$tradeTime[[tp]])){
         text <- paste0(text, "addTradeTime(",
-                       "type='", tp, "', '", 
+                       "type='", tp, "', '",
                        sec_to_tstr(strategy$tradeTime[[tp]][[i]][[1]]), "', '",
                        sec_to_tstr(strategy$tradeTime[[tp]][[i]][[2]]), "')", nextline)
       }
     }
   }
-  
+
   # constants
   {
     var_fun <- list(
@@ -312,7 +312,7 @@ format.Strategy <- function(strategy){
       text <- paste0(text, var_fun[[name]], "(", paste0(deparse(strategy[[name]]), collapse = '\n'), ")", nextline)
     }
   }
-  
+
   # report stats
   if(length(strategy$report_stats) > 0){
     text <- paste0(text, 'addToReport(\n')
@@ -325,10 +325,33 @@ format.Strategy <- function(strategy){
     }
     text <- paste0(substr(text, 1, nchar(text) - 2), ')', nextline)
   }
-  
+
   # distributions
-  {}
-  
+  if(length(strategy$paramset$distributions)){
+    other_dist <- FALSE
+    text <- paste0(text, 'addDistribution(\n')
+    for(dst in strategy$paramset$distributions){
+      if(dst[['component.type']] == 'params' && dst[['component.label']] == 'all'){
+        text <- paste0(text, '\t', names(dst$variable)[1], ' = ',
+                       paste(deparse(dst$variable[[1]]), collapse = '\n'), ",\n")
+      }else{
+        other_dist <- TRUE
+      }
+    }
+    text <- paste0(substr(text, 1, nchar(text) - 2), ')', nextline)
+    if(other_dist){
+      for(dst in strategy$paramset$distributions){
+        if(dst[['component.type']] == 'params' && dst[['component.label']] == 'all'){
+        }else{
+          text <- paste0(text, 'addDistribution(\n',
+                         "\tcomponent.type = ", deparse(dst[['component.type']]), ",\n",
+                         "\tcomponent.label = ", deparse(dst[['component.label']]), ",\n",
+                         "\tvariable = ", paste(deparse(dst$variable), collapse = '\n'), ")", nextline)
+        }
+      }
+    }
+  }
+
   # distribution constraints
   if(length(strategy$paramset$constraints)){
     text <- paste0(text, 'addDistributionConstraint(\n')
@@ -337,7 +360,7 @@ format.Strategy <- function(strategy){
     }
     text <- paste0(substr(text, 1, nchar(text) - 2), ')', nextline)
   }
-  
+
   substr(text, 1, nchar(text) - nchar(nextline))
 }
 

@@ -161,12 +161,23 @@ reinitStat.Strategy <- function(this){
 #' @rdname addObject
 #' @method addObject Strategy
 addObject.Strategy <- function(this, ...){
+  vars <- rlang::enexprs(...)
   dots <- list(...)
-  if(is.null(names(dots)) || any(names(dots) == '')){
-    stop("object must have a name.")
+  if(is.null(names(dots))){
+    names(dots) <- rep('', length(dots))
+  }
+  for(i in seq_along(dots)){
+    if(names(dots)[i] == ''){
+      if(is.symbol(vars[[i]])){
+        names(dots)[i] <- as.character(vars[[i]])
+      }else{
+        stop("Arguments should be have names")
+      }
+    }
   }
   for(name in names(dots)){
     this[['objects']][[name]] <- dots[[name]]
   }
+  return(invisible(this))
 }
 

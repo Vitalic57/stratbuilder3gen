@@ -41,11 +41,25 @@ getBacktestResults.Strategy <- function(this, recalc=TRUE){
 #' @export
 getBacktestPnL.Strategy <- function(this, ind = NULL){
   if(is.null(ind)){
-    do.call(cbind, lapply(this[['paramset']][['results']], '[[', 'pnl')) %>% 
-      set_colnames(names(this[['paramset']][['results']]))
+    ind <- names(this[['paramset']][['results']])
   }else{
     ind <- as.character(ind)
-    do.call(cbind, lapply(this[['paramset']][['results']][ind], '[[', 'pnl')) %>% 
-      set_colnames(ind)
   }
+  if(!is.null(this[['paramset']][['results']][[1]][['pnl']])){
+    res <- do.call(cbind, lapply(this[['paramset']][['results']][ind], '[[', 'pnl')) %>% 
+      set_colnames(ind)
+  }else if(!is.null(this[['paramset']][['results']][[1]][['backtest']])){
+    init_backtest <- this$backtest
+    res <- do.call(cbind, lapply(this[['paramset']][['results']][ind], function(l){
+      this[['backtest']] <- l[['backtest']]
+      getPnL(this)
+    })) %>% 
+      set_colnames(ind)
+    this$backtest <- init_backtest
+  }else{
+    stop('No PnL info in paramset results')
+  }
+  return(res)
 }
+
+

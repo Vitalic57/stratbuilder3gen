@@ -176,7 +176,7 @@ addObject.Strategy <- function(this, ...){
     }
   }
   for(name in names(dots)){
-    this[['objects']][[name]] <- dots[[name]]
+    this[['objects']][[name]] <-  dots[[name]]
   }
   return(invisible(this))
 }

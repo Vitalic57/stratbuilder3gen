@@ -188,7 +188,7 @@ format_obj <- function(obj, def_obj, exclude_args, fun_name){
 format.Rule <- function(rule){
   format_obj(obj=rule,
              def_obj=Rule(name='!default!'),
-             exclude_args=c('env', 'this', 'qposition_const', 'qposition'),
+             exclude_args=c('env', 'this', 'qposition_const', 'qposition', 'qexpr', 'qon_success'),
              fun_name='addRule')
 }
 
@@ -208,7 +208,7 @@ is.Rule <- function(rule){
 format.RuleConstraint <- function(rulec){
   format_obj(obj=rulec,
              def_obj=RuleConstraint(name='!default!'),
-             exclude_args=c('env', 'this'),
+             exclude_args=c('env', 'this', 'qexpr', 'qon_success'),
              fun_name='addRuleConstraint')
 }
 
@@ -228,7 +228,7 @@ is.RuleConstraint <- function(rulec){
 format.Indicator <- function(indicator){
   format_obj(obj=indicator,
              def_obj=Indicator(name='!default!'),
-             exclude_args=c('env', 'this', 'lookforward_current', 'lookforward_logical'),
+             exclude_args=c('env', 'this', 'lookforward_current', 'lookforward_logical', 'prev_lookback', 'qexpr'),
              fun_name='addIndicator')
 }
 

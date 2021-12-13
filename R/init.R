@@ -11,6 +11,15 @@ NULL
 #' @export
 cur_price <- NULL
 
+#' Current exchanged price
+#'
+#' Numeric vector.
+#' Tt is equal to close price exchanged to data's main currency on given moment inside backtester cycle.
+#' Often used in rule's position/position_const block.
+#'
+#' @export
+cur_exchanged_price <- NULL
+
 #' Size of current positions
 #'
 #' Numeric vector.

@@ -51,17 +51,23 @@ addTradeTime.Strategy <- function(this, type, ...){
                 {
                   return()
                 })
-  l <- list(...)
-  if(all(vapply(l, length, numeric(1)) == 2)){
-    for(i in seq_len(length(l))){
-      this$tradeTime[[ind]][[length(this$tradeTime[[ind]]) + 1]] <- lapply(l[[i]], tstr_to_sec)
-    }
-  }else if(length(l) == 2 && all(vapply(l, length, numeric(1)) == 1)){
-    this$tradeTime[[ind]][[length(this$tradeTime[[ind]]) + 1]] <- lapply(c(l[[1]], l[[2]]), tstr_to_sec)
-  }else if(length(l) == 1 && length(l[[1]]) == 1){
-    this$tradeTime[[ind]][[length(this$tradeTime[[ind]]) + 1]] <- lapply(c(l[[1]], '23:59:59'), tstr_to_sec)
+  l <- rlang::enexprs(...)
+  if(is.null(this[['tradeTime']][[ind]])){
+    this[['tradeTime']][[ind]] <- list()
   }
+  this[['tradeTime']][[ind]][[length(this[['tradeTime']][[ind]]) + 1]] <- l
   return(invisible(this))
+}
+
+
+num_to_tstr <- function(this, x){
+  vapply(x, function(y){
+    y <- eval(y, envir = getParams(this, 'all'))
+    if(is.numeric(y)){
+      y <- paste0(y %/% 1, ":", ((y %% 1) * 60) %/% 1)
+    }
+    y
+  }, FUN.VALUE = character(1))
 }
 
 
@@ -74,19 +80,34 @@ addTradeTime.Strategy <- function(this, type, ...){
 #' @method getTradeTime Strategy
 #' @export
 getTradeTime.Strategy <- function(this, type = 'all'){
+  tradeTime <- list()
+  for(ind in names(this[['tradeTime']])){
+    for(l in this[['tradeTime']][[ind]]){
+      if(all(vapply(l, length, numeric(1)) == 2)){
+        for(i in seq_len(length(l))){
+          tradeTime[[ind]][[length(tradeTime[[ind]]) + 1]] <- lapply(num_to_tstr(this, l[[i]]), tstr_to_sec)
+        }
+      }else if(length(l) == 2 && all(vapply(l, length, numeric(1)) == 1)){
+        tradeTime[[ind]][[length(tradeTime[[ind]]) + 1]] <- lapply(num_to_tstr(this, l[1:2]), tstr_to_sec)
+      }else if(length(l) == 1 && length(l[[1]]) == 1){
+        tradeTime[[ind]][[length(tradeTime[[ind]]) + 1]] <- lapply(num_to_tstr(this, list(l[[1]], '23:59:59')), tstr_to_sec)
+      }
+    }
+  }
+  
   switch(type,
          all = {
-           this$tradeTime
+           tradeTime
          },
          enter =,
          open = {
-           this$tradeTime[['enter']]
+           tradeTime[['enter']]
          },
          close = {
-           this$tradeTime[['close']]
+           tradeTime[['close']]
          },
          rebalance= {
-           this$tradeTime[['rebalance']]
+           tradeTime[['rebalance']]
          }
   )
 }

@@ -279,14 +279,13 @@ format.Strategy <- function(strategy){
   }
 
   # trade time
-  if(length(strategy$tradeTime) > 0){
-    for(tp in names(strategy$tradeTime)){
-      for(i in seq_along(strategy$tradeTime[[tp]])){
-        text <- paste0(text, "addTradeTime(",
-                       "type='", tp, "', '",
-                       sec_to_tstr(strategy$tradeTime[[tp]][[i]][[1]]), "', '",
-                       sec_to_tstr(strategy$tradeTime[[tp]][[i]][[2]]), "')", nextline)
+  tradeTime <- strategy$tradeTime
+  if(length(tradeTime) > 0){
+    for(tp in names(tradeTime)){
+      for(i in seq_along(tradeTime[[tp]])){
+        text <- paste0(text,  paste(deparse( rlang::call2("addTradeTime", type=tp, !!!tradeTime[[tp]][[i]])), collapse = '\n\t'), nextline)
       }
+     
     }
   }
 

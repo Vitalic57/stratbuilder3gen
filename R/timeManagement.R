@@ -147,9 +147,10 @@ clearTradeTime.Strategy <- function(this, type = 'all'){
 #' @method printTradeTime Strategy
 #' @export
 printTradeTime.Strategy <- function(this, type = 'all'){
+  tt <- getTradeTime(this)
   ind <- switch(type,
                 all = {
-                  names(getTradeTime(this))
+                  names(tt)
                 },
                 enter =,
                 open = {
@@ -164,7 +165,7 @@ printTradeTime.Strategy <- function(this, type = 'all'){
                 })
   x <- lapply(ind, function(x){
     print(paste0(x, ' trade time:'))
-    x <- lapply(this$tradeTime[[x]], function(l){
+    x <- lapply(tt[[x]], function(l){
       print(paste0('start : ', sec_to_tstr(l[[1]]), ', end : ', sec_to_tstr(l[[2]])))
     })
   })

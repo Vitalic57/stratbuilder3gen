@@ -241,47 +241,50 @@ calcVecSignals.Strategy <- function(this, env=NULL, ...){
   for(x in names(dots)){
     res[[x]] <- dots[[x]]
   }
-  # if(!'range' %in% names(dots)){
-  #   res[['range']] <- 1:res[['data']][['nrow']]
-  # }
   
   signals <- c(getIndicators(this), getRules(this, pathwise = FALSE))
   for(x in signals){
-    x[['env']] <- new.env()
-    parent.env(x[['env']]) <- res
-    if(!is.null(x[['vars']])){
-      # lazy evaluation
-      if(is.null(x[['qexpr']])){
-        x[['qexpr']] <- pryr::substitute_q(call('within', list(), x[['expr']]), env = c(getParams(this, 'indicators'), x[['args']]))
-      }
-      rlang::env_bind_lazy(x[['env']],
-                    !!x[['name']] := !!x[['qexpr']],
-                    .eval_env = x[['env']]
-      )
-      for(var in x[['vars']]){
-          rlang::env_bind_lazy(res,
-                        !!var := (!!x[['env']])[[!!x[['name']]]][[!!var]],
-                        .eval_env = res
-          )
-      }
+    if(is.Rule(x)){
+      args <- c(getParams(this, 'rules'), x[['args']])
     }else{
-      # lazy evaluation
-      if(is.null(x[['qexpr']])){
-        if(class(x)[1] == 'Indicator'){
-          x[['qexpr']] <- pryr::substitute_q(x[['expr']], env = c(getParams(this, 'indicators'), x[['args']]))
-        }else{
-          x[['qexpr']] <- pryr::substitute_q(x[['expr']], env = c(getParams(this, 'rules'), x[['args']]))
-        }
-      }
-      rlang::env_bind_lazy(x[['env']],
-                    !!x[['name']] := !!x[['qexpr']],
-                    .eval_env = x[['env']]
-      )
-      rlang::env_bind_lazy(res,
-                    !!x$name := (!!x[['env']])[[!!x[['name']]]],
-                    .eval_env = res
-      )
+      args <- c(getParams(this, 'indicators'), x[['args']])
     }
+    res[[x[['name']]]] <- eval(pryr::substitute_q(x[['expr']], env = args), envir = res)
+    # x[['env']] <- new.env()
+    # parent.env(x[['env']]) <- res
+    # if(!is.null(x[['vars']])){
+    #   # lazy evaluation
+    #   if(is.null(x[['qexpr']])){
+    #     x[['qexpr']] <- pryr::substitute_q(call('within', list(), x[['expr']]), env = c(getParams(this, 'indicators'), x[['args']]))
+    #   }
+    #   rlang::env_bind_lazy(x[['env']],
+    #                 !!x[['name']] := !!x[['qexpr']],
+    #                 .eval_env = x[['env']]
+    #   )
+    #   for(var in x[['vars']]){
+    #       rlang::env_bind_lazy(res,
+    #                     !!var := (!!x[['env']])[[!!x[['name']]]][[!!var]],
+    #                     .eval_env = res
+    #       )
+    #   }
+    # }else{
+    #   # lazy evaluation
+    #   if(is.null(x[['qexpr']])){
+    #     if(class(x)[1] == 'Indicator'){
+    #       x[['qexpr']] <- pryr::substitute_q(x[['expr']], env = c(getParams(this, 'indicators'), x[['args']]))
+    #     }else{
+    #       x[['qexpr']] <- pryr::substitute_q(x[['expr']], env = c(getParams(this, 'rules'), x[['args']]))
+    #     }
+    #   }
+    #   rlang::env_bind_lazy(x[['env']],
+    #                 !!x[['name']] := !!x[['qexpr']],
+    #                 .eval_env = x[['env']]
+    #   )
+    #   rlang::env_bind_lazy(res,
+    #                 !!x$name := (!!x[['env']])[[!!x[['name']]]],
+    #                 .eval_env = res
+    #   )
+    # }
   } 
   return(invisible(res))
 }

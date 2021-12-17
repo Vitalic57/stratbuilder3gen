@@ -171,7 +171,7 @@ addObject.Strategy <- function(this, ...){
       if(is.symbol(vars[[i]])){
         names(dots)[i] <- as.character(vars[[i]])
       }else{
-        stop("Arguments should be have names")
+        stop("Arguments should have names")
       }
     }
   }

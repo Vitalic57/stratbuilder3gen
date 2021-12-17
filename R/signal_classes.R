@@ -19,7 +19,7 @@ Signal <- function(expr,
   parent.env(this) <- parent.frame()
   expr <- rlang::enexpr(expr)
   lookback <- rlang::enexpr(lookback)
-  env <- new.env()
+  #env <- new.env()
   list2env(list(...), envir = this)
   class(this) <- 'Signal'
   return(this)
@@ -228,7 +228,7 @@ is.RuleConstraint <- function(rulec){
 format.Indicator <- function(indicator){
   format_obj(obj=indicator,
              def_obj=Indicator(name='!default!'),
-             exclude_args=c('env', 'this', 'lookforward_current', 'lookforward_logical', 'prev_lookback', 'qexpr'),
+             exclude_args=c('env', 'this', 'lookforward_current', 'lookforward_logical', 'prev_lookback', 'qexpr', 'lookforward_expr'),
              fun_name='addIndicator')
 }
 

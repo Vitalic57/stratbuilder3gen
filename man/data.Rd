@@ -5,7 +5,7 @@
 \alias{data}
 \title{Data object.}
 \format{
-An object of class \code{Data} (inherits from \code{environment}) of length 27.
+An object of class \code{Data} (inherits from \code{environment}) of length 26.
 }
 \usage{
 data

@@ -7,6 +7,11 @@
 \alias{addStat.Strategy}
 \alias{removeStat.Strategy}
 \alias{reinitStat.Strategy}
+\alias{updateStat}
+\alias{updateStat.Strategy}
+\alias{extractStat.Strategy}
+\alias{extractStat}
+\alias{extractObjects}
 \title{This variable will be included to program and after calling perform function  it will be updated}
 \usage{
 addStat(this, ...)
@@ -20,6 +25,16 @@ reinitStat(this)
 \method{removeStat}{Strategy}(this, name)
 
 \method{reinitStat}{Strategy}(this)
+
+updateStat(this, e)
+
+\method{updateStat}{Strategy}(this, e)
+
+\method{extractStat}{Strategy}(this, e)
+
+extractStat(this, e)
+
+extractObjects(this, e)
 }
 \arguments{
 \item{this}{Strategy}
@@ -27,6 +42,8 @@ reinitStat(this)
 \item{...}{params}
 
 \item{name}{character}
+
+\item{e}{environment}
 }
 \description{
 This variable will be included to program and after calling perform function  it will be updated
@@ -34,4 +51,10 @@ This variable will be included to program and after calling perform function  it
 Deletes variable from stats
 
 Reinit all variables in stats
+
+Update all variables in stats from environment
+
+Update environment with user-defined stats
+
+Update environment with user-defined stats
 }

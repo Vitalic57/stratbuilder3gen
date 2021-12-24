@@ -241,7 +241,7 @@ calcVecSignals.Strategy <- function(this, env=NULL, ...){
   for(x in names(dots)){
     res[[x]] <- dots[[x]]
   }
-  
+  extractObjects(this, res)
   signals <- c(getIndicators(this), getRules(this, pathwise = FALSE))
   for(x in signals){
     if(is.Rule(x)){

@@ -151,6 +151,48 @@ reinitStat.Strategy <- function(this){
 }
 
 
+#' Update all variables in stats from environment
+#'
+#' @param e environment
+#' @param this Strategy
+#' @rdname stat
+#' @export
+updateStat <- function(this, e){
+  UseMethod('updateStat', this)
+}
+
+#' @rdname stat
+#' @method updateStat Strategy
+#' @export
+updateStat.Strategy <- function(this, e){
+  if('stats' %in% names(this)){
+    for(name in names(this$stats)){
+      this$stats[[name]] <- get(name, envir = e)
+    }
+  }
+}
+
+
+#' @rdname stat
+#' @method extractStat Strategy
+#' @export
+extractStat.Strategy <- function(this, e){
+  if('stats' %in% names(this)){
+    list2env(this$stats, envir = e)
+  }
+}
+
+
+#' Update environment with user-defined stats
+#'
+#' @param e environment
+#' @param this Strategy
+#' @rdname stat
+#' @export
+extractStat <- function(this, e){
+  UseMethod('extractStat', this)
+}
+
 
 #' Add user-defined objects to Strategy for future usage in backtest
 #'
@@ -179,5 +221,34 @@ addObject.Strategy <- function(this, ...){
     this[['objects']][[name]] <-  dots[[name]]
   }
   return(invisible(this))
+}
+
+
+#' Update environment with user-defined stats
+#'
+#' @param e environment
+#' @param this Strategy
+#' @rdname stat
+#' @export
+extractObjects <- function(this, e){
+  UseMethod('extractObjects', this)
+}
+
+
+#' @rdname objects
+#' @method extractObjects Strategy
+#' @export
+extractObjects.Strategy <- function(this, e){
+  if(!is.null(this[['objects']])){
+    for(n in ls(this[['objects']], all.names=TRUE)){
+      tmp <- get(n, this$objects)
+      if(is.function(tmp)){
+        if(!isNamespace(environment(tmp))){
+          environment(tmp) <- e
+        }
+      }
+      assign(n, tmp, e)
+    } 
+  }
 }
 

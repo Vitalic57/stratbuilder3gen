@@ -5,37 +5,36 @@
 #' @rdname Strategy
 Strategy <- function(){
   this <- environment()
-  with(this, {
-    stats_init <- list()
-    stats <- list()
-    report_stats <- list()
-    money <- 10^7
-    created <- Sys.Date()
-    expand_lookback <- FALSE
-    version <- list(major = packageVersion('stratbuilder3gen')$major,
-                    minor = packageVersion('stratbuilder3gen')$minor)
-    # call for getting list of evaluated rules
-    rules_calls <- NULL
-    # if rules call needs to be recalculated at every evaluation
-    recalc_rules_calls <- FALSE
-    variables <- list()
-    indicators <- list()
-    futchains <- list()
-    rules <- list()
-    rule_constraints <- list()
-    objects <- list()
-    lookbacks <- list()
-    paramset <- NULL
-    backtest <- NULL
-    pps <- list()
-    tradeTime <- list()
-    program <- list()
-    params <- list(
-      all = list()
-    )
-  })
-
+  stats_init <- list()
+  stats <- list()
+  report_stats <- list()
+  money <- 10^7
+  created <- Sys.Date()
+  expand_lookback <- FALSE
+  version <- list(major = packageVersion('stratbuilder3gen')$major,
+                  minor = packageVersion('stratbuilder3gen')$minor)
+  # call for getting list of evaluated rules
+  rules_calls <- NULL
+  # if rules call needs to be recalculated at every evaluation
+  recalc_rules_calls <- FALSE
+  variables <- list()
+  indicators <- list()
+  futchains <- list()
+  rules <- list()
+  rule_constraints <- list()
+  objects <- list()
+  lookbacks <- list()
+  paramset <- NULL
+  backtest <- NULL
+  pps <- list()
+  tradeTime <- list()
+  program <- list()
+  params <- list(
+    all = list()
+  )
+  
   class(this) <- c("Strategy")
+  #parent.env(this) <- emptyenv()
 
   return(this)
 }

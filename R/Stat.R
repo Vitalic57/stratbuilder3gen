@@ -38,9 +38,12 @@ Stat <- function(description, in_report, func, keywords, depends, name, general)
   }
   if(missing(func)){
     func <- NULL
+  }else{
+    environment(func) <- emptyenv()
   }
+  
   class(this) <- c("Stat")
-
+  #parent.env(this) <- emptyenv()
   return(this)
 }
 

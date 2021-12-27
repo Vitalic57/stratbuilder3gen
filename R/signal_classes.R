@@ -19,7 +19,6 @@ Signal <- function(expr,
   parent.env(this) <- parent.frame()
   expr <- rlang::enexpr(expr)
   lookback <- rlang::enexpr(lookback)
-  #env <- new.env()
   list2env(list(...), envir = this)
   class(this) <- 'Signal'
   return(this)
@@ -107,6 +106,7 @@ Rule <- function(type='enter',
       stop("block can't be equal to all when type is enter")
     }
   }
+  
   signal <- Signal(...)
   with(signal, {
     price <- rlang::enexpr(price)

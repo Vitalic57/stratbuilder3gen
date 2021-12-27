@@ -25,16 +25,14 @@ Signal <- function(expr,
   return(this)
 }
 
-# @param history logical, whether it expressed as matrix of previous and future values or expressed as statistic that recalculated
-# when lookforward triggers
-
 #' Indicator constructor
 #'
 #' Indicators serves for calculating rules
 #'
 #' @param lookforward numeric / expression. If it is numeric then after that number of points all indicators will be recalculated.
 #' If it is expression then it should return logical. It will indicate recalculate indicators or not.
-#' @param vars character vector, which names should be exported from expr
+#' @param vars character vector, which names are defined in expr. This field is necessary for definition of indicators dependencies. 
+#' Update of one indicator trigger another indicators for update.
 #' @param ... args passed to Signal
 #'
 #' @export

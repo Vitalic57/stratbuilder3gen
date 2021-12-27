@@ -34,7 +34,8 @@ addIndicator(this, expr, name, lookback, args, lookforward, vars)
 \item{lookforward}{numeric / expression. If it is numeric then after that number of points all indicators will be recalculated.
 If it is expression then it should return logical. It will indicate recalculate indicators or not.}
 
-\item{vars}{character vector, which names should be exported from expr}
+\item{vars}{character vector, which names are defined in expr. This field is necessary for definition of indicators dependencies. 
+Update of one indicator trigger another indicators for update.}
 }
 \description{
 Define variable via expr and name it via name. It will be recalculated each lookforward steps.

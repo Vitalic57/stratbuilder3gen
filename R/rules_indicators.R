@@ -249,7 +249,12 @@ calcVecSignals.Strategy <- function(this, env=NULL, ...){
     }else{
       args <- c(getParams(this, 'indicators'), x[['args']])
     }
-    res[[x[['name']]]] <- eval(pryr::substitute_q(x[['expr']], env = args), envir = res)
+    if(is.language(x[['expr']])){
+      res[[x[['name']]]] <- eval(pryr::substitute_q(x[['expr']], env = args), envir = res)
+    }else{
+      res[[x[['name']]]] <- x[['expr']]
+    }
+    
     # x[['env']] <- new.env()
     # parent.env(x[['env']]) <- res
     # if(!is.null(x[['vars']])){

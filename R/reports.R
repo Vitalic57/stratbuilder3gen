@@ -78,6 +78,7 @@ calcStat_.Strategy <- function(this, s, start, end, args=list()){
       }
     })
   })
+  environment(s[['func']]) <- emptyenv()
   if(length(args) == 0){
     if(s[['general']]){
       this[['backtest']][['results']][s[['name']]] <- list(value)

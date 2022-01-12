@@ -228,7 +228,7 @@ addObject.Strategy <- function(this, ...){
 #'
 #' @param e environment
 #' @param this Strategy
-#' @rdname stat
+#' @rdname objects
 #' @export
 extractObjects <- function(this, e){
   UseMethod('extractObjects', this)

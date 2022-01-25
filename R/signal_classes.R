@@ -158,6 +158,7 @@ RuleConstraint <- function(
 
 format_obj <- function(obj, def_obj, exclude_args, fun_name){
   text <- paste0(fun_name, "(\n")
+  ind <- FALSE
   for(name in  sort(names(obj))){
     if(name %in% exclude_args){
       next
@@ -175,8 +176,14 @@ format_obj <- function(obj, def_obj, exclude_args, fun_name){
     }, error = function(e){})
     text <- paste0(text,
                    "\t",name,' = ',paste(deparse(obj[[name]]), collapse = '\n\t'), ",\n")
+    ind <- TRUE
   }
-  text <- paste0(substr(text, 1, nchar(text) - 2), '\n)')
+  if(ind){
+    text <- paste0(substr(text, 1, nchar(text) - 2), '\n)')
+  }else{
+    text <- paste0(text, ')')
+  }
+  
   return(text)
 }
 
@@ -205,7 +212,7 @@ is.Rule <- function(rule){
 #' @method format RuleConstraint
 format.RuleConstraint <- function(rulec){
   format_obj(obj=rulec,
-             def_obj=RuleConstraint(name='!default!'),
+             def_obj=RuleConstraint(name='!default!', rules = NULL),
              exclude_args=c('env', 'this', 'qexpr', 'qon_success'),
              fun_name='addRuleConstraint')
 }

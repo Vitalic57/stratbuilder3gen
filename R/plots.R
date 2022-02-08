@@ -151,7 +151,7 @@ plotPnL.Strategy <- function(this,
          if(cutoff && 'created' %in% names(this)){
            p <- p + ggplot2::geom_vline(xintercept=as.numeric(this$created), linetype=4, colour="green")
          }
-         if(leg[0] != 'sep'){
+         if(leg[1] != 'sep'){
            p <- p + ggplot2::scale_color_manual(
              values = c(
                PnL = 'darkblue'

@@ -43,7 +43,7 @@ removeIndicator(this, name)
 
 \method{getSignals}{Strategy}(this)
 
-\method{calcVecSignals}{Strategy}(this, env = NULL, ...)
+\method{calcVecSignals}{Strategy}(this, env = NULL, names = NULL, ...)
 }
 \arguments{
 \item{this}{Strategy}
@@ -53,6 +53,8 @@ removeIndicator(this, name)
 \item{pathwise}{logical, if true then return only pathwise=TRUE rules}
 
 \item{env}{environment, result environment, if NULL then new environment will be created}
+
+\item{names}{character, what indicators should be evaluated}
 
 \item{...}{variables}
 }

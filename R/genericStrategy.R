@@ -484,7 +484,7 @@ printTradeTime <- function(this, type){
 }
 
 #' @export
-calcVecSignals <- function(this, env, ...){
+calcVecSignals <- function(this, env, names, ...){
   UseMethod("calcVecSignals", this)
 }
 

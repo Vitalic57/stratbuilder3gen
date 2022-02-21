@@ -223,13 +223,14 @@ getSignals.Strategy <- function(this){
 #'
 #' @param this Strategy
 #' @param env environment, result environment, if NULL then new environment will be created
+#' @param names character, what indicators should be evaluated
 #' @param ... variables
 #'
 #' @return environment
 #' @rdname Signal
 #' @method calcVecSignals Strategy
 #' @export 
-calcVecSignals.Strategy <- function(this, env=NULL, ...){
+calcVecSignals.Strategy <- function(this, env=NULL, names=NULL, ...){
   if(is.null(env)){
     res <- new.env()
     parent.env(res) <- parent.frame()
@@ -244,6 +245,9 @@ calcVecSignals.Strategy <- function(this, env=NULL, ...){
   extractObjects(this, res)
   signals <- c(getIndicators(this), getRules(this, pathwise = FALSE))
   for(x in signals){
+    if(!is.null(names) && !x[['name']] %in% names){
+      next
+    }
     if(is.Rule(x)){
       args <- c(getParams(this, 'rules'), x[['args']])
     }else{
